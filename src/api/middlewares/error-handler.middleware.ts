@@ -4,7 +4,7 @@ import { ValidationError } from "sequelize";
 import validationSequelizeSchema from "../../utils/validationSequelizeSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 
-export const ErrorHandlerMiddleware = async (
+export const ErrorHandlerMiddleware = (
 	err: unknown,
 	req: Request,
 	res: Response,

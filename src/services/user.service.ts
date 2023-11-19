@@ -1,10 +1,16 @@
 import { sequelize } from "../db/db.js";
 import {
+	LoginRequestDtoType,
+	LoginResponseDtoType,
+} from "../db/dtos/users/login.dto.js";
+import {
 	RegisterRequestDtoType,
 	RegisterResponseDtoType,
 } from "../db/dtos/users/register.dto.js";
 import User from "../db/models/user.model.js";
+import { validate } from "../utils/bcrypt.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
+import { jwtSign } from "../utils/jwt.js";
 
 class UserService {
 	private readonly _userRepository;
@@ -31,6 +37,45 @@ class UserService {
 					createdAt,
 				},
 			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async login(request: LoginRequestDtoType): Promise<LoginResponseDtoType> {
+		try {
+			const user = await this.findByEmail(request.email);
+
+			if (!user) {
+				return "Email or Password is incorrect";
+			}
+
+			const isMatched = await validate(request.password, user.password);
+			if (!isMatched) {
+				return "Email or Password is incorrect";
+			}
+
+			const token = jwtSign({
+				email: user.email,
+				full_name: user.full_name,
+				userId: user.id,
+			});
+
+			return { token };
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async findByEmail(email: string): Promise<User | null> {
+		try {
+			const existedUser = await this._userRepository.findOne({
+				where: {
+					email,
+				},
+			});
+
+			return existedUser;
 		} catch (error) {
 			throw error;
 		}

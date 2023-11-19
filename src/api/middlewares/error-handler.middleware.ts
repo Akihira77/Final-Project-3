@@ -19,6 +19,8 @@ export const ErrorHandlerMiddleware = (
 	} else if (err instanceof ZodSchemaError) {
 		res.status(err.statusCode).send({ name: err.name, errors: err.errors });
 		return;
+	} else if (err instanceof CustomAPIError) {
+		res.status(err.statusCode).send({ message: err.message });
 	}
 	res.status(StatusCodes.InternalServerError500).send({ err });
 	return;

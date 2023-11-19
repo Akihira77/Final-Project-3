@@ -3,8 +3,8 @@ import { CustomAPIError } from "../../errors/index.error.js";
 import { StatusCodes } from "../../utils/constants.js";
 import { jwtVerify } from "../../utils/jwt.js";
 
-const authMiddleware = async (
-	req: Request,
+const authMiddleware = (
+	req: Request<never, never, never, never>,
 	res: Response,
 	next: NextFunction
 ) => {

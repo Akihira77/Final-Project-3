@@ -15,13 +15,12 @@ export const ErrorHandlerMiddleware = (
 		res.status(StatusCodes.BadRequest400).send({
 			errors: validationSequelizeSchema(err),
 		});
-		return;
 	} else if (err instanceof ZodSchemaError) {
 		res.status(err.statusCode).send({ name: err.name, errors: err.errors });
-		return;
 	} else if (err instanceof CustomAPIError) {
 		res.status(err.statusCode).send({ message: err.message });
+	} else {
+		res.status(StatusCodes.InternalServerError500).send({ err });
 	}
-	res.status(StatusCodes.InternalServerError500).send({ err });
 	return;
 };

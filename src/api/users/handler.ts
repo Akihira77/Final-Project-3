@@ -15,6 +15,18 @@ import {
 	UpdateUserRequestDtoType,
 } from "../../db/dtos/users/update.dto.js";
 
+export const findAll = async (req: Request, res: Response) => {
+	try {
+		const userService = new UserService();
+		const users = await userService.findAll();
+
+		res.status(StatusCodes.Ok200).send({ users });
+		return;
+	} catch (error) {
+		throw error;
+	}
+};
+
 export const register = async (
 	req: Request<never, never, RegisterRequestDtoType, never>,
 	res: Response
@@ -102,6 +114,42 @@ export const updateUser = async (
 		const updateUser = await userService.updateUser(existedUser, req.body);
 
 		res.status(StatusCodes.Ok200).send(updateUser);
+		return;
+	} catch (error) {
+		throw error;
+	}
+};
+
+export const deleteUser = async (
+	req: Request<{ userId: number }, never, never, never>,
+	res: Response
+) => {
+	try {
+		const userId = Number(req.params.userId);
+
+		if (userId !== req.user.userId) {
+			throw new CustomAPIError("Invalid User", StatusCodes.Conflict409);
+		}
+
+		const userService = new UserService();
+		const existedUser = await userService.findByUserId(userId);
+
+		if (!existedUser) {
+			throw new CustomAPIError("Invalid User", StatusCodes.NotFound404);
+		}
+
+		const affectedUser = await userService.deleteUser(userId);
+
+		if (!affectedUser) {
+			throw new CustomAPIError(
+				"Deleting Failed. Please try again!",
+				StatusCodes.BadRequest400
+			);
+		}
+
+		res.status(StatusCodes.Ok200).send({
+			message: "Your account has been successfully deleted",
+		});
 		return;
 	} catch (error) {
 		throw error;

@@ -22,6 +22,14 @@ class UserService {
 		this._userRepository = sequelize.getRepository(User);
 	}
 
+	async findAll(): Promise<User[]> {
+		try {
+			return await this._userRepository.findAll();
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	async register(
 		request: RegisterRequestDtoType
 	): Promise<RegisterResponseDtoType> {
@@ -120,6 +128,20 @@ class UserService {
 					updatedAt,
 				},
 			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async deleteUser(userId: number): Promise<boolean> {
+		try {
+			const affectedUser = await this._userRepository.destroy({
+				where: {
+					id: userId,
+				},
+			});
+
+			return Boolean(affectedUser);
 		} catch (error) {
 			throw error;
 		}

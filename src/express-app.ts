@@ -1,10 +1,12 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import "express-async-errors";
 import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./db/db.js";
 import userEndpoint from "./api/users/endpoints.js";
 import { ErrorHandlerMiddleware } from "./api/middlewares/error-handler.middleware.js";
+import authMiddleware from "./api/middlewares/auth.middleware.js";
+import categoryEndpoints from "./api/categories/endpoints.js";
 
 export const startServer = async () => {
 	await sequelize.sync();
@@ -18,9 +20,18 @@ export const startServer = async () => {
 
 	// ROUTER
 	app.use("/api/users", userEndpoint);
+	app.use(
+		"/api/categories",
+		(
+			req: Request<never, never, never, never>,
+			res: Response,
+			next: NextFunction
+		) => authMiddleware(req, res, next, "admin"),
+		categoryEndpoints
+	);
 
 	// Catch not found route
-	app.all("*", (req, res) => {
+	app.all("*", (req: Request, res: Response) => {
 		res.status(404).send({ msg: "Invalid Route" });
 		return;
 	});

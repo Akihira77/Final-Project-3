@@ -14,6 +14,10 @@ import {
 	UpdateUserRequestDTO,
 	UpdateUserRequestDtoType,
 } from "../../db/dtos/users/update.dto.js";
+import {
+	TopupRequestDTO,
+	TopupRequestDtoType,
+} from "../../db/dtos/users/topup.dto.js";
 
 export const findAll = async (req: Request, res: Response) => {
 	try {
@@ -149,6 +153,35 @@ export const deleteUser = async (
 
 		res.status(StatusCodes.Ok200).send({
 			message: "Your account has been successfully deleted",
+		});
+		return;
+	} catch (error) {
+		throw error;
+	}
+};
+
+export const topup = async (
+	req: Request<never, never, TopupRequestDtoType, never>,
+	res: Response
+) => {
+	try {
+		const validationResult = validateZodSchema(TopupRequestDTO, req.body);
+		if (!validationResult.success) {
+			throw new ZodSchemaError(validationResult.errors);
+		}
+
+		const userService = new UserService();
+		const result = await userService.topup(
+			req.body.balance,
+			req.user.userId
+		);
+
+		if (typeof result === "string") {
+			throw new CustomAPIError(result, StatusCodes.BadRequest400);
+		}
+
+		res.status(StatusCodes.Ok200).send({
+			message: `Your balance has been successfully updated to Rp ${result}`,
 		});
 		return;
 	} catch (error) {

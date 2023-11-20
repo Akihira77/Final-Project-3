@@ -9,5 +9,6 @@ userEndpoints.post("/register", userHandler.register);
 userEndpoints.post("/login", userHandler.login);
 userEndpoints.put("/:userId", authMiddleware, userHandler.updateUser);
 userEndpoints.delete("/:userId", authMiddleware, userHandler.deleteUser);
+userEndpoints.patch("/topup", authMiddleware, userHandler.topup);
 
 export default userEndpoints;

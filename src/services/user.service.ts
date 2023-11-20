@@ -7,6 +7,7 @@ import {
 	RegisterRequestDtoType,
 	RegisterResponseDtoType,
 } from "../db/dtos/users/register.dto.js";
+import { TopupResponseDtoType } from "../db/dtos/users/topup.dto.js";
 import {
 	UpdateUserRequestDtoType,
 	UpdateUserResponseDtoType,
@@ -142,6 +143,34 @@ class UserService {
 			});
 
 			return Boolean(affectedUser);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async topup(
+		balance: number,
+		userId: number
+	): Promise<TopupResponseDtoType> {
+		try {
+			const user = await this._userRepository.findByPk(userId);
+			if (!user) {
+				return "Invalid User";
+			}
+
+			const affectedUser = await this._userRepository.update(
+				{ balance: balance + user.balance },
+				{
+					where: {
+						id: userId,
+					},
+					returning: true,
+				}
+			);
+
+			const updatedUser = affectedUser[1][0]!;
+
+			return updatedUser.balance;
 		} catch (error) {
 			throw error;
 		}

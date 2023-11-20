@@ -5,6 +5,7 @@ type AuthPayload = {
 	userId: number;
 	email: string;
 	full_name: string;
+	role: string;
 };
 
 export function jwtSign(payload: AuthPayload) {

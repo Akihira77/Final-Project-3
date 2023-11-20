@@ -24,7 +24,7 @@ module.exports = {
 				},
 			},
 			sold_product_amount: {
-				type: Sequelize.NUMBER,
+				type: Sequelize.INTEGER,
 				allowNull: false,
 				validate: {
 					isNumeric: true,

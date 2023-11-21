@@ -9,60 +9,25 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
 		 */
-		await queryInterface.createTable("Users", {
+		await queryInterface.createTable("Categories", {
 			id: {
 				type: Sequelize.INTEGER,
-				autoIncrement: true,
 				primaryKey: true,
 				allowNull: false,
+				autoIncrement: true,
 			},
-			full_name: {
+			type: {
 				type: Sequelize.STRING,
 				allowNull: false,
 				validate: {
 					notEmpty: true,
 				},
 			},
-			email: {
-				type: Sequelize.STRING,
-				unique: true,
-				allowNull: false,
-				validate: {
-					isEmail: true,
-					notEmpty: true,
-				},
-			},
-			password: {
-				type: Sequelize.STRING,
-				allowNull: false,
-				validate: {
-					notEmpty: true,
-				},
-			},
-			gender: {
-				type: Sequelize.STRING,
-				validate: {
-					is: ["male", "female"],
-					notEmpty: true,
-				},
-				allowNull: false,
-			},
-			role: {
-				type: Sequelize.STRING,
-				allowNull: false,
-				validate: {
-					is: ["admin", "customer"],
-				},
-				defaultValue: "customer",
-			},
-			balance: {
+			sold_product_amount: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				validate: {
-					isInt: true,
-					max: 100_000_000,
-					min: 0,
-					notEmpty: true,
+					isNumeric: true,
 				},
 				defaultValue: 0,
 			},
@@ -85,6 +50,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.dropTable('users');
 		 */
-		await queryInterface.dropTable("Users");
+		await queryInterface.dropTable("Categories");
 	},
 };

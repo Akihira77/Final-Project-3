@@ -10,4 +10,3 @@ productEndpoints.patch("/:productId", productHandler.patchProduct);
 productEndpoints.delete("/:productId", productHandler.removeProduct);
 
 export default productEndpoints;
-

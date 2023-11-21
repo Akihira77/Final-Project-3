@@ -1,6 +1,4 @@
-import { RegisterRequestDTO } from "./../../db/dtos/users/register.dto.js";
 import { Request, Response } from "express";
-import { RegisterRequestDtoType } from "../../db/dtos/users/register.dto.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { ZodSchemaError, CustomAPIError } from "../../errors/index.error.js";
 import { hashPassword } from "../../utils/bcrypt.js";
@@ -9,15 +7,13 @@ import { StatusCodes } from "../../utils/constants.js";
 import {
 	LoginRequestDTO,
 	LoginRequestDtoType,
-} from "../../db/dtos/users/login.dto.js";
-import {
-	UpdateUserRequestDTO,
-	UpdateUserRequestDtoType,
-} from "../../db/dtos/users/update.dto.js";
-import {
+	RegisterRequestDTO,
+	RegisterRequestDtoType,
 	TopupRequestDTO,
 	TopupRequestDtoType,
-} from "../../db/dtos/users/topup.dto.js";
+	UpdateUserRequestDTO,
+	UpdateUserRequestDtoType,
+} from "../../db/dtos/users/index.dto.js";
 
 export const findAll = async (req: Request, res: Response) => {
 	try {

@@ -11,6 +11,8 @@ import {
 	Table,
 	UpdatedAt,
 	Model,
+	Max,
+	Min,
 } from "sequelize-typescript";
 // import Category from "./category.model.js";
 
@@ -37,11 +39,14 @@ class Product extends Model implements IProduct {
 	@Column(DataType.STRING)
 	declare title: string;
 	
+	@Max(50_000_000)
+	@Min(0)
     @AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare price: number;
   
+	@Min(5)
     @AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)

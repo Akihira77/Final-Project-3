@@ -44,6 +44,21 @@ export const addProduct = async (
 				StatusCodes.BadRequest400
 			);
 		}
+		
+		if (req.body.price > 50000000) {
+			throw new CustomAPIError(
+				"Maximum Price is Rp. 50.000.000 ",
+				StatusCodes.BadRequest400
+			);
+		}
+
+		if (req.body.stock < 5) {
+			throw new CustomAPIError(
+				"Minimum Stock is 5 pcs",
+				StatusCodes.BadRequest400
+			);
+		}
+
 		if (!validationResult.success) {
 			throw new ZodSchemaError(validationResult.errors);
 		}

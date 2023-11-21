@@ -7,7 +7,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, NotEmpty, PrimaryKey, Table, UpdatedAt, Model, } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, NotEmpty, PrimaryKey, Table, UpdatedAt, Model, Max, Min, } from "sequelize-typescript";
 let Product = class Product extends Model {
 };
 __decorate([
@@ -24,12 +24,15 @@ __decorate([
     __metadata("design:type", String)
 ], Product.prototype, "title", void 0);
 __decorate([
+    Max(50000000),
+    Min(0),
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", Number)
 ], Product.prototype, "price", void 0);
 __decorate([
+    Min(5),
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),

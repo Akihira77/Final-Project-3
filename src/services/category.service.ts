@@ -54,6 +54,18 @@ class CategoryService {
 			throw error;
 		}
 	}
+
+	async findById(categoryId: number): Promise<Category | null> {
+		try {
+			const category = await this._categoryRepository.findByPk(
+				categoryId
+			);
+
+			return category;
+		} catch (error) {
+			throw error;
+		}
+	}
 }
 
 export default CategoryService;

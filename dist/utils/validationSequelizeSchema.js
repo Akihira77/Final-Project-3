@@ -3,3 +3,4 @@ export default function validationSequelizeSchema({ errors }) {
         return err.message;
     });
 }
+//# sourceMappingURL=validationSequelizeSchema.js.map

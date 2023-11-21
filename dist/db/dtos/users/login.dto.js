@@ -11,3 +11,4 @@ export const LoginResponseDTO = z.union([
         token: z.string(),
     }),
 ]);
+//# sourceMappingURL=login.dto.js.map

@@ -8,3 +8,4 @@ class CustomAPIError extends Error {
     }
 }
 export default CustomAPIError;
+//# sourceMappingURL=custom.error.js.map

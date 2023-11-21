@@ -1,2 +1,4 @@
 import User from "./models/user.model.js";
-export const entities = [User];
+import Product from "./models/product.model.js";
+export const entities = [User, Product];
+//# sourceMappingURL=entities.js.map

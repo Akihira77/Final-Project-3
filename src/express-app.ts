@@ -4,6 +4,8 @@ import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./db/db.js";
 import userEndpoint from "./api/users/endpoints.js";
+import productEndpoint from "./api/products/endpoints.js";
+import authMiddleware from "./api/middlewares/auth.middleware.js";
 import { ErrorHandlerMiddleware } from "./api/middlewares/error-handler.middleware.js";
 
 export const startServer = async () => {
@@ -18,6 +20,7 @@ export const startServer = async () => {
 
 	// ROUTER
 	app.use("/api/users", userEndpoint);
+	app.use("/api/products", authMiddleware, productEndpoint);
 
 	// Catch not found route
 	app.all("*", (req, res) => {

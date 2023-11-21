@@ -72,6 +72,7 @@ class UserService {
 				email: user.email,
 				full_name: user.full_name,
 				userId: user.id,
+				role: user.role
 			});
 
 			return { token };

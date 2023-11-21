@@ -14,3 +14,4 @@ export const UpdateUserResponseDTO = z.object({
         updatedAt: z.date(),
     }),
 });
+//# sourceMappingURL=update.dto.js.map

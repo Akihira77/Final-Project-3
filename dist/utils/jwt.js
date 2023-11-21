@@ -10,3 +10,4 @@ export function jwtVerify(token) {
     const payload = jwt.verify(token, JWT_SECRET);
     return payload;
 }
+//# sourceMappingURL=jwt.js.map

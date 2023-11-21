@@ -7,3 +7,4 @@ export const sequelize = new Sequelize(connectionString, {
     models: entities,
     repositoryMode: true,
 });
+//# sourceMappingURL=db.js.map

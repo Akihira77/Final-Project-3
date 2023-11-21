@@ -80,3 +80,4 @@ User = __decorate([
     Table({ tableName: "Users" })
 ], User);
 export default User;
+//# sourceMappingURL=user.model.js.map

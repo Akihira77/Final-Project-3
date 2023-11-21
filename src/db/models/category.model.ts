@@ -16,6 +16,7 @@ export interface ICategory {
 	id: number;
 	type: string;
 	sold_product_amount: number;
+	// products: Product[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -35,8 +36,11 @@ class Category extends Model implements ICategory {
 
 	@NotEmpty
 	@AllowNull(false)
+	@Default(0)
 	@Column(DataType.INTEGER)
 	declare sold_product_amount: number;
+
+	// declare products
 
 	@CreatedAt
 	@Column(DataType.DATE)

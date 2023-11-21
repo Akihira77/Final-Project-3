@@ -29,6 +29,7 @@ module.exports = {
 				validate: {
 					isNumeric: true,
 				},
+				defaultValue: 0,
 			},
 			createdAt: {
 				type: Sequelize.DATE,
@@ -49,5 +50,6 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.dropTable('users');
 		 */
+		await queryInterface.dropTable("Categories");
 	},
 };

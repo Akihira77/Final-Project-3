@@ -7,62 +7,46 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, NotEmpty, PrimaryKey, Table, UpdatedAt, Model, Max, Min, } from "sequelize-typescript";
-import Category from "./category.model.js";
-let Product = class Product extends Model {
+import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Default, HasMany, Model, NotEmpty, PrimaryKey, Table, UpdatedAt, } from "sequelize-typescript";
+import Product from "./product.model.js";
+let Category = class Category extends Model {
 };
 __decorate([
     PrimaryKey,
-    AllowNull(false),
     AutoIncrement,
+    AllowNull(false),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Product.prototype, "id", void 0);
+], Category.prototype, "id", void 0);
 __decorate([
-    AllowNull(false),
     NotEmpty,
+    AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], Product.prototype, "title", void 0);
+], Category.prototype, "type", void 0);
 __decorate([
-    Max(50000000),
-    Min(0),
-    AllowNull(false),
     NotEmpty,
-    Column(DataType.STRING),
-    __metadata("design:type", Number)
-], Product.prototype, "price", void 0);
-__decorate([
-    Min(5),
     AllowNull(false),
-    NotEmpty,
-    Column(DataType.STRING),
-    __metadata("design:type", Number)
-], Product.prototype, "stock", void 0);
-__decorate([
-    AllowNull(false),
-    ForeignKey(() => Category),
+    Default(0),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Product.prototype, "CategoryId", void 0);
+], Category.prototype, "sold_product_amount", void 0);
 __decorate([
-    BelongsTo(() => Category),
-    __metadata("design:type", void 0)
-], Product.prototype, "category", void 0);
+    HasMany(() => Product),
+    __metadata("design:type", Array)
+], Category.prototype, "products", void 0);
 __decorate([
-    AllowNull(false),
     CreatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Product.prototype, "createdAt", void 0);
+], Category.prototype, "createdAt", void 0);
 __decorate([
-    AllowNull(false),
     UpdatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Product.prototype, "updatedAt", void 0);
-Product = __decorate([
-    Table({ tableName: "Products" })
-], Product);
-export default Product;
-//# sourceMappingURL=product.model.js.map
+], Category.prototype, "updatedAt", void 0);
+Category = __decorate([
+    Table({ tableName: "Categories" })
+], Category);
+export default Category;
+//# sourceMappingURL=category.model.js.map

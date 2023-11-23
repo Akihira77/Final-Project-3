@@ -11,6 +11,9 @@ module.exports = {
             full_name: {
                 type: Sequelize.STRING,
                 allowNull: false,
+                validate: {
+                    notEmpty: true,
+                },
             },
             email: {
                 type: Sequelize.STRING,
@@ -18,16 +21,21 @@ module.exports = {
                 allowNull: false,
                 validate: {
                     isEmail: true,
+                    notEmpty: true,
                 },
             },
             password: {
                 type: Sequelize.STRING,
                 allowNull: false,
+                validate: {
+                    notEmpty: true,
+                },
             },
             gender: {
                 type: Sequelize.STRING,
                 validate: {
                     is: ["male", "female"],
+                    notEmpty: true,
                 },
                 allowNull: false,
             },
@@ -46,6 +54,7 @@ module.exports = {
                     isInt: true,
                     max: 100000000,
                     min: 0,
+                    notEmpty: true,
                 },
                 defaultValue: 0,
             },
@@ -56,7 +65,7 @@ module.exports = {
             updatedAt: {
                 type: Sequelize.DATE,
                 allowNull: false,
-                defaultValue: Date.now(),
+                defaultValue: new Date(),
             },
         });
     },

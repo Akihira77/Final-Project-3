@@ -14,7 +14,7 @@ import {
 	Max,
 	Min,
 } from "sequelize-typescript";
-// import Category from "./category.model.js";
+import Category from "./category.model.js";
 
 export interface IProduct {
 	id: number;
@@ -26,7 +26,7 @@ export interface IProduct {
 	updatedAt: Date;
 }
 
-@Table
+@Table({ tableName: "Products" })
 class Product extends Model implements IProduct {
 	@PrimaryKey
 	@AllowNull(false)
@@ -38,27 +38,27 @@ class Product extends Model implements IProduct {
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare title: string;
-	
+
 	@Max(50_000_000)
 	@Min(0)
-    @AllowNull(false)
+	@AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare price: number;
-  
+
 	@Min(5)
-    @AllowNull(false)
+	@AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare stock: number;
-    
+
 	@AllowNull(false)
-	// @ForeignKey(() => Category)
+	@ForeignKey(() => Category)
 	@Column(DataType.INTEGER)
 	declare CategoryId: number;
 
-    // @BelongsTo(() => Category)
-	// declare category: ReturnType<() => Category>;
+	@BelongsTo(() => Category)
+	declare category: ReturnType<() => Category>;
 
 	@AllowNull(false)
 	@CreatedAt

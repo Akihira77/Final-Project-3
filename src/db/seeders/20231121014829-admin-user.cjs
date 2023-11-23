@@ -1,4 +1,5 @@
 "use strict";
+const bcrypt = require("bcrypt");
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
@@ -12,12 +13,14 @@ module.exports = {
 		 *   isBetaMember: false
 		 * }], {});
 		 */
-
+		async function generateSalt() {
+			return await bcrypt.genSalt(10);
+		}
 		await queryInterface.bulkInsert("Users", [
 			{
 				full_name: "admin user",
 				email: "user.admin@example.com",
-				password: "adminuser123",
+				password: await bcrypt.hash("admin123", await generateSalt()),
 				gender: "female",
 				role: "admin",
 				createdAt: new Date(),
@@ -32,6 +35,7 @@ module.exports = {
 		 * Example:
 		 * await queryInterface.bulkDelete('People', null, {});
 		 */
-		await queryInterface.bulkDelete("Users", null, {});
+		// const Op = Sequelize.Op;
+		await queryInterface.bulkDelete("Users", { role: "admin" }, {});
 	},
 };

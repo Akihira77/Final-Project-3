@@ -1,6 +1,8 @@
 import {
 	AllowNull,
 	AutoIncrement,
+	BeforeBulkCreate,
+	BeforeCreate,
 	Column,
 	CreatedAt,
 	DataType,
@@ -16,6 +18,7 @@ import {
 	Unique,
 	UpdatedAt,
 } from "sequelize-typescript";
+import { hashPassword } from "../../utils/bcrypt.js";
 
 export const Genders = ["male", "female"] as const;
 export const Roles = ["admin", "customer"] as const;
@@ -88,6 +91,12 @@ class User extends Model implements IUser {
 	@UpdatedAt
 	@Column(DataType.DATE)
 	declare updatedAt: Date;
+
+	@BeforeCreate
+	@BeforeBulkCreate
+	static async hashingPassword(instance: User) {
+		instance.password = await hashPassword(instance.password);
+	}
 }
 
 export default User;

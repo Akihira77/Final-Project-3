@@ -10,6 +10,21 @@ import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import CategoryService from "../../services/category.service.js";
 import { StatusCodes } from "../../utils/constants.js";
 
+export const findAll = async (
+	req: Request<never, never, never, never>,
+	res: Response
+) => {
+	try {
+		const categoryService = new CategoryService();
+		const categories = await categoryService.findAll();
+
+		res.status(StatusCodes.Ok200).send({ categories });
+		return;
+	} catch (error) {
+		throw error;
+	}
+};
+
 export const add = async (
 	req: Request<never, never, CreateCategoryRequestDtoType, never>,
 	res: Response

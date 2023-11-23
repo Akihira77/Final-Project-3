@@ -1,12 +1,8 @@
-import { RegisterRequestDTO } from "./../../db/dtos/users/register.dto.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { ZodSchemaError, CustomAPIError } from "../../errors/index.error.js";
-import { hashPassword } from "../../utils/bcrypt.js";
 import UserService from "../../services/user.service.js";
 import { StatusCodes } from "../../utils/constants.js";
-import { LoginRequestDTO, } from "../../db/dtos/users/login.dto.js";
-import { UpdateUserRequestDTO, } from "../../db/dtos/users/update.dto.js";
-import { TopupRequestDTO, } from "../../db/dtos/users/topup.dto.js";
+import { LoginRequestDTO, RegisterRequestDTO, TopupRequestDTO, UpdateUserRequestDTO, } from "../../db/dtos/users/index.dto.js";
 export const findAll = async (req, res) => {
     try {
         const userService = new UserService();
@@ -25,11 +21,7 @@ export const register = async (req, res) => {
             throw new ZodSchemaError(validationResult.errors);
         }
         const userService = new UserService();
-        const newPassword = await hashPassword(req.body.password);
-        const result = await userService.register({
-            ...req.body,
-            password: newPassword,
-        });
+        const result = await userService.register(req.body);
         res.status(StatusCodes.Created201).send(result);
         return;
     }

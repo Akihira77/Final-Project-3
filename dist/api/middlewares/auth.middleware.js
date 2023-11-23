@@ -1,13 +1,18 @@
 import { CustomAPIError } from "../../errors/index.error.js";
 import { StatusCodes } from "../../utils/constants.js";
 import { jwtVerify } from "../../utils/jwt.js";
-const authMiddleware = (req, res, next) => {
+const authMiddleware = (req, res, next, rolePermitted = undefined) => {
     try {
         const token = req.headers.token;
         if (!token || token === "" || Array.isArray(token)) {
-            throw new CustomAPIError("Authorization Failed", StatusCodes.Forbidden403);
+            throw new CustomAPIError("Authentication Failed", StatusCodes.Forbidden403);
         }
         const payload = jwtVerify(token);
+        if (rolePermitted) {
+            if (payload.user.role !== rolePermitted) {
+                throw new CustomAPIError("Invalid Credentials", StatusCodes.Forbidden403);
+            }
+        }
         req.user = payload.user;
         next();
     }
@@ -16,3 +21,4 @@ const authMiddleware = (req, res, next) => {
     }
 };
 export default authMiddleware;
+//# sourceMappingURL=auth.middleware.js.map

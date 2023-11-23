@@ -42,11 +42,8 @@ export const register = async (
 		}
 
 		const userService = new UserService();
-		const newPassword = await hashPassword(req.body.password);
-		const result = await userService.register({
-			...req.body,
-			password: newPassword,
-		});
+		// const newPassword = await hashPassword(req.body.password);
+		const result = await userService.register(req.body);
 
 		res.status(StatusCodes.Created201).send(result);
 		return;

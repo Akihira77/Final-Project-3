@@ -7,10 +7,14 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Default, Is, IsEmail, Max, Min, Model, NotEmpty, PrimaryKey, Table, Unique, UpdatedAt, } from "sequelize-typescript";
+import { AllowNull, AutoIncrement, BeforeBulkCreate, BeforeCreate, Column, CreatedAt, DataType, Default, Is, IsEmail, Max, Min, Model, NotEmpty, PrimaryKey, Table, Unique, UpdatedAt, } from "sequelize-typescript";
+import { hashPassword } from "../../utils/bcrypt.js";
 export const Genders = ["male", "female"];
 export const Roles = ["admin", "customer"];
 let User = class User extends Model {
+    static async hashingPassword(instance) {
+        instance.password = await hashPassword(instance.password);
+    }
 };
 __decorate([
     PrimaryKey,
@@ -76,7 +80,15 @@ __decorate([
     Column(DataType.DATE),
     __metadata("design:type", Date)
 ], User.prototype, "updatedAt", void 0);
+__decorate([
+    BeforeCreate,
+    BeforeBulkCreate,
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [User]),
+    __metadata("design:returntype", Promise)
+], User, "hashingPassword", null);
 User = __decorate([
     Table({ tableName: "Users" })
 ], User);
 export default User;
+//# sourceMappingURL=user.model.js.map

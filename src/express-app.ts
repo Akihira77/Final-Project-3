@@ -4,6 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 import { sequelize } from "./db/db.js";
 import userEndpoint from "./api/users/endpoints.js";
+import productEndpoint from "./api/products/endpoints.js";
 import { ErrorHandlerMiddleware } from "./api/middlewares/error-handler.middleware.js";
 import authMiddleware from "./api/middlewares/auth.middleware.js";
 import categoryEndpoints from "./api/categories/endpoints.js";
@@ -29,12 +30,14 @@ export const startServer = async () => {
 		) => authMiddleware(req, res, next, "admin"),
 		categoryEndpoints
 	);
+	app.use("/api/products", authMiddleware, productEndpoint);
 
 	// Catch not found route
 	app.all("*", (req: Request, res: Response) => {
 		res.status(404).send({ msg: "Invalid Route" });
 		return;
 	});
+
 
 	// Error Middleware
 	app.use(ErrorHandlerMiddleware);

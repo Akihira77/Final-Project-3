@@ -18,3 +18,4 @@ export const RegisterResponseDTO = z.object({
         createdAt: z.date(),
     }),
 });
+//# sourceMappingURL=register.dto.js.map

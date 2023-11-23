@@ -1,0 +1,1 @@
+{"version":3,"file":"formattedCurrency.js","sourceRoot":"","sources":["../../src/utils/formattedCurrency.ts"],"names":[],"mappings":"AAAA,MAAM,UAAU,cAAc,CAAC,KAAa;IAC3C,MAAM,gBAAgB,GAAG,IAAI,IAAI,CAAC,YAAY,CAAC,OAAO,CAAC,CAAC,MAAM,CAAC,KAAK,CAAC,CAAC;IAEtE,OAAO,MAAM,gBAAgB,EAAE,CAAC;AACjC,CAAC"}

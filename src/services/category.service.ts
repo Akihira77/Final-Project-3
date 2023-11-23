@@ -1,14 +1,29 @@
 import { sequelize } from "../db/db.js";
 import Category from "../db/models/category.model.js";
+import Product from "../db/models/product.model.js";
 
 class CategoryService {
 	private readonly _categoryRepository;
+	private readonly _productRepository;
 	constructor() {
 		this._categoryRepository = sequelize.getRepository(Category);
+		this._productRepository = sequelize.getRepository(Product);
 	}
 
-	async findAll(): Promise<void> {
-		return;
+	async findAll(): Promise<Category[]> {
+		try {
+			const categories = await this._categoryRepository.findAll({
+				include: [
+					{
+						model: this._productRepository,
+					},
+				],
+			});
+
+			return categories;
+		} catch (error) {
+			throw error;
+		}
 	}
 
 	async add(type: string): Promise<Category> {

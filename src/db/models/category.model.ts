@@ -5,18 +5,20 @@ import {
 	CreatedAt,
 	DataType,
 	Default,
+	HasMany,
 	Model,
 	NotEmpty,
 	PrimaryKey,
 	Table,
 	UpdatedAt,
 } from "sequelize-typescript";
+import Product from "./product.model.js";
 
 export interface ICategory {
 	id: number;
 	type: string;
 	sold_product_amount: number;
-	// products: Product[];
+	products: Product[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -40,7 +42,8 @@ class Category extends Model implements ICategory {
 	@Column(DataType.INTEGER)
 	declare sold_product_amount: number;
 
-	// declare products
+	@HasMany(() => Product)
+	declare products: Product[];
 
 	@CreatedAt
 	@Column(DataType.DATE)

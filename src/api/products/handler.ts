@@ -15,8 +15,11 @@ import {
 	PatchProductRequestDTO,
 	PatchProductRequestDtoType,
 } from "../../db/dtos/products/patch.dto.js";
+import Category from "../../db/models/category.model.js";
+import CategoryService from "../../services/category.service.js";
 
 const productService = new ProductService();
+const categoryService = new CategoryService();
 
 export const findAllProduct = async (req: Request, res: Response) => {
 	try {
@@ -58,6 +61,14 @@ export const addProduct = async (
 				StatusCodes.BadRequest400
 			);
 		}
+
+		const category: Category | null = await categoryService.findById(req.body.CategoryId);
+        if (!category) {
+            throw new CustomAPIError(
+                "category does not found",
+                 StatusCodes.NotFound404
+             );
+         }
 
 		if (!validationResult.success) {
 			throw new ZodSchemaError(validationResult.errors);

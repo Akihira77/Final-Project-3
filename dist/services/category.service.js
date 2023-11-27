@@ -47,6 +47,23 @@ class CategoryService {
             throw error;
         }
     }
+    async editSPA(categoryId, request) {
+        try {
+            const result = await this._categoryRepository.update(request, {
+                where: {
+                    id: categoryId,
+                },
+                returning: true,
+            });
+            const { sold_product_amount } = result[1][0];
+            return {
+                sold_product_amount,
+            };
+        }
+        catch (error) {
+            throw error;
+        }
+    }
     async delete(categoryId) {
         try {
             const affectedCategories = await this._categoryRepository.destroy({

@@ -15,6 +15,7 @@ import {
 	PatchProductResponseDtoType,
 } from "../db/dtos/products/patch.dto";
 import { formatCurrency } from "../utils/formattedCurrency.js";
+import { editStockProductRequestDtoType, editStockProductResponseDtoType } from "../db/dtos/products/editStock.dto";
 
 
 export class ProductService {
@@ -135,6 +136,28 @@ export class ProductService {
 				CategoryId,
 				createdAt,
 				updatedAt,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async editStock(
+		productId: string,
+		request: editStockProductRequestDtoType
+	): Promise<editStockProductResponseDtoType> {
+		try {
+			const result = await this._productRepository.update(request, {
+				where: {
+					id: productId,			
+				},
+				returning: true,
+			});
+
+			const {stock} = result[1][0]!;
+
+			return {
+				stock,
 			};
 		} catch (error) {
 			throw error;

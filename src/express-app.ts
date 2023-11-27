@@ -8,6 +8,7 @@ import productEndpoint from "./api/products/endpoints.js";
 import { ErrorHandlerMiddleware } from "./api/middlewares/error-handler.middleware.js";
 import authMiddleware from "./api/middlewares/auth.middleware.js";
 import categoryEndpoints from "./api/categories/endpoints.js";
+import transactionEndpoint from "./api/transaction/endpoints.js";
 
 export const startServer = async () => {
 	await sequelize.sync();
@@ -31,6 +32,7 @@ export const startServer = async () => {
 		categoryEndpoints
 	);
 	app.use("/api/products", authMiddleware, productEndpoint);
+	app.use("/api/transactions", authMiddleware, transactionEndpoint);
 
 	// Catch not found route
 	app.all("*", (req: Request, res: Response) => {

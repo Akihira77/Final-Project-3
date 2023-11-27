@@ -7,7 +7,7 @@ import {
 	RegisterRequestDtoType,
 	RegisterResponseDtoType,
 } from "../db/dtos/users/register.dto.js";
-import { TopupResponseDtoType } from "../db/dtos/users/topup.dto.js";
+import { TopupRequestDtoType, TopupResponseDtoType } from "../db/dtos/users/topup.dto.js";
 import {
 	UpdateUserRequestDtoType,
 	UpdateUserResponseDtoType,
@@ -182,6 +182,27 @@ class UserService {
 			throw error;
 		}
 	}
+
+	async editBalanceIfTransactionSuccess(
+		userId: number,
+		request: TopupRequestDtoType
+	): Promise<TopupResponseDtoType> {
+		try {
+			const result = await this._userRepository.update(request, {
+				where: {
+					id: userId,			
+				},
+				returning: true,
+			});
+
+			const updatedUser = result[1][0]!;
+
+			return updatedUser.balance;
+		} catch (error) {
+			throw error;
+		}
+	}
+
 }
 
 export default UserService;

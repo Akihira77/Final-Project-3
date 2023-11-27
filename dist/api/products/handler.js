@@ -5,7 +5,9 @@ import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import { EditProductRequestDTO, } from "../../db/dtos/products/edit.dto.js";
 import { PatchProductRequestDTO, } from "../../db/dtos/products/patch.dto.js";
+import CategoryService from "../../services/category.service.js";
 const productService = new ProductService();
+const categoryService = new CategoryService();
 export const findAllProduct = async (req, res) => {
     try {
         const products = await productService.findAll();
@@ -27,6 +29,10 @@ export const addProduct = async (req, res) => {
         }
         if (req.body.stock < 5) {
             throw new CustomAPIError("Minimum Stock is 5 pcs", StatusCodes.BadRequest400);
+        }
+        const category = await categoryService.findById(req.body.CategoryId);
+        if (!category) {
+            throw new CustomAPIError("category does not found", StatusCodes.NotFound404);
         }
         if (!validationResult.success) {
             throw new ZodSchemaError(validationResult.errors);

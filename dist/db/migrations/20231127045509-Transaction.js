@@ -1,34 +1,40 @@
 "use strict";
 module.exports = {
     async up(queryInterface, Sequelize) {
-        await queryInterface.createTable("Products", {
+        await queryInterface.createTable("Transactions", {
             id: {
                 primaryKey: true,
                 allowNull: false,
                 autoIncrement: true,
                 type: Sequelize.INTEGER,
             },
-            title: {
-                allowNull: false,
-                type: Sequelize.STRING,
-            },
-            price: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-            },
-            stock: {
-                allowNull: false,
-                type: Sequelize.INTEGER,
-            },
-            CategoryId: {
+            ProductId: {
                 type: Sequelize.INTEGER,
                 allowNull: false,
                 references: {
-                    model: "Categories",
+                    model: "Products",
                     key: "id",
                 },
                 onDelete: "CASCADE",
                 onUpdate: "CASCADE",
+            },
+            UserId: {
+                type: Sequelize.INTEGER,
+                allowNull: false,
+                references: {
+                    model: "Users",
+                    key: "id",
+                },
+                onDelete: "CASCADE",
+                onUpdate: "CASCADE",
+            },
+            quantity: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
+            },
+            total_price: {
+                allowNull: false,
+                type: Sequelize.INTEGER,
             },
             createdAt: {
                 allowNull: false,
@@ -42,8 +48,7 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("Products");
+        await queryInterface.dropTable("Transactions");
     },
 };
-export {};
-//# sourceMappingURL=20231121020545-Product.cjs.map
+//# sourceMappingURL=20231127045509-Transaction.js.map

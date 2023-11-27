@@ -20,10 +20,8 @@ import { editStockProductRequestDtoType, editStockProductResponseDtoType } from 
 
 export class ProductService {
 	private readonly _productRepository;
-	// private readonly _categoryRepository;
 	constructor() {
 		this._productRepository = sequelize.getRepository(Product);
-		// this._categoryRepository = sequelize.getRepository(Category);
 	}
 
 	async findAll(): Promise<Product[]> {

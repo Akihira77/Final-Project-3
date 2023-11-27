@@ -36,13 +36,6 @@ export const findAllTransactionAdmin = async (req: Request, res: Response) => {
 	try {
 		const transactions = await transactionService.findAllTransactionAdmin();
 
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
-		}
-
 		res.status(StatusCodes.Ok200).send({ transactions });
 		return;
 	} catch (error) {
@@ -56,13 +49,6 @@ export const findTransactionById = async (
 ) => {
 	try {
 		const transactions = await transactionService.findTransactionById(req.params.transactionId);
-
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
-		}
 
 		res.status(StatusCodes.Ok200).send({ transactions });
 		return;
@@ -148,118 +134,3 @@ export const addTransaction = async (
 		throw error;
 	}
 };
-
-
-// export const updateTransaction = async (
-// 	req: Request<{ transactionId: string }, never, EditTransactionRequestDtoType, never>,
-// 	res: Response
-// ) => {
-// 	try {
-// 		const validationResult = validateZodSchema(
-// 			EditTransactionRequestDTO,
-// 			req.body
-// 		);
-
-// 		if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-// 			throw new CustomAPIError(
-// 				"The Customer role must not access this endpoint",
-// 				StatusCodes.BadRequest400
-// 			);
-// 		}
-
-// 		if (!validationResult.success) {
-// 			throw new ZodSchemaError(validationResult.errors);
-// 		}
-
-// 		const existedTransaction = await transactionService.findById(req.params.transactionId);
-
-// 		if (!existedTransaction) {
-// 			throw new CustomAPIError(
-// 				"Transaction does not found",
-// 				StatusCodes.NotFound404
-// 			);
-// 		}
-
-// 		const result = await transactionService.edit(req.params.transactionId, req.body);
-
-// 		res.status(StatusCodes.Ok200).send({ transaction: result });
-// 		return;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// };
-
-// export const patchTransaction = async (
-// 	req: Request<{ transactionId: string }, never, PatchTransactionRequestDtoType, never>,
-// 	res: Response
-// ) => {
-// 	try {
-// 		const validationResult = validateZodSchema(
-// 			PatchTransactionRequestDTO,
-// 			req.body
-// 		);
-
-// 		if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-// 			throw new CustomAPIError(
-// 				"The Customer role must not access this endpoint",
-// 				StatusCodes.BadRequest400
-// 			);
-// 		}
-
-// 		if (!validationResult.success) {
-// 			throw new ZodSchemaError(validationResult.errors);
-// 		}
-
-// 		const existedTransaction = await transactionService.findById(req.params.transactionId);
-
-// 		if (!existedTransaction) {
-// 			throw new CustomAPIError(
-// 				"Transaction does not found",
-// 				StatusCodes.NotFound404
-// 			);
-// 		}
-
-// 		const result = await transactionService.patch(req.params.transactionId, req.body);
-
-// 		res.status(StatusCodes.Ok200).send({ transaction: result });
-// 		return;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// };
-
-// export const removeTransaction = async (
-// 	req: Request<{ transactionId: string }, never, never, never>,
-// 	res: Response
-// ) => {
-// 	try {
-// 		if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-// 			throw new CustomAPIError(
-// 				"The Customer role must not access this endpoint",
-// 				StatusCodes.BadRequest400
-// 			);
-// 		}
-		
-// 		if (!req.params.transactionId || req.params.transactionId === "") {
-// 			throw new CustomAPIError(
-// 				"TransactionId must be provided",
-// 				StatusCodes.BadRequest400
-// 			);
-// 		}
-
-// 		const result = await transactionService.delete(req.params.transactionId);
-// 		if (!result) {
-// 			throw new CustomAPIError(
-// 				"Transaction does not found",
-// 				StatusCodes.NotFound404
-// 			);
-// 		}
-
-// 		res.status(StatusCodes.Ok200).send({
-// 			message: "Your transaction has been successfully deleted",
-// 		});
-// 		return;
-// 	} catch (error) {
-// 		throw error;
-// 	}
-// };

@@ -23,9 +23,6 @@ export const findAllTransactionUser = async (req, res) => {
 export const findAllTransactionAdmin = async (req, res) => {
     try {
         const transactions = await transactionService.findAllTransactionAdmin();
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         res.status(StatusCodes.Ok200).send({ transactions });
         return;
     }
@@ -36,9 +33,6 @@ export const findAllTransactionAdmin = async (req, res) => {
 export const findTransactionById = async (req, res) => {
     try {
         const transactions = await transactionService.findTransactionById(req.params.transactionId);
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         res.status(StatusCodes.Ok200).send({ transactions });
         return;
     }

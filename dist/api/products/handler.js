@@ -21,9 +21,6 @@ export const findAllProduct = async (req, res) => {
 export const addProduct = async (req, res) => {
     try {
         const validationResult = validateZodSchema(CreateProductRequestDTO, req.body);
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         if (req.body.price > 50000000) {
             throw new CustomAPIError("Maximum Price is Rp. 50.000.000 ", StatusCodes.BadRequest400);
         }
@@ -48,9 +45,6 @@ export const addProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
     try {
         const validationResult = validateZodSchema(EditProductRequestDTO, req.body);
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         if (!validationResult.success) {
             throw new ZodSchemaError(validationResult.errors);
         }
@@ -69,9 +63,6 @@ export const updateProduct = async (req, res) => {
 export const patchProduct = async (req, res) => {
     try {
         const validationResult = validateZodSchema(PatchProductRequestDTO, req.body);
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         if (!validationResult.success) {
             throw new ZodSchemaError(validationResult.errors);
         }
@@ -89,9 +80,6 @@ export const patchProduct = async (req, res) => {
 };
 export const removeProduct = async (req, res) => {
     try {
-        if (!req.user.role || req.user.role === "" || req.user.role === "customer") {
-            throw new CustomAPIError("The Customer role must not access this endpoint", StatusCodes.BadRequest400);
-        }
         if (!req.params.productId || req.params.productId === "") {
             throw new CustomAPIError("ProductId must be provided", StatusCodes.BadRequest400);
         }

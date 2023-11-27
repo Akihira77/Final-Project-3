@@ -12,6 +12,21 @@ export class TransactionService {
         this._userRepository = sequelize.getRepository(User);
         this._productRepository = sequelize.getRepository(Product);
     }
+    formatTransaction(transaction, includeUser = false) {
+        const formattedTransaction = {
+            ProductId: transaction.ProductId,
+            UserId: transaction.UserId,
+            quantity: transaction.quantity,
+            total_price: transaction.total_price,
+            createdAt: transaction.createdAt,
+            updatedAt: transaction.updatedAt,
+            Product: transaction.product,
+        };
+        if (includeUser && transaction.user) {
+            formattedTransaction.User = transaction.user;
+        }
+        return formattedTransaction;
+    }
     async findAllTransactionUser(userId) {
         try {
             const transactions = await this._transactionRepository.findAll({
@@ -26,15 +41,7 @@ export class TransactionService {
                         attributes: ['id', 'title', 'price', 'stock', 'CategoryId'],
                     }],
             });
-            const formattedTransactions = transactions.map(transaction => ({
-                ProductId: transaction.ProductId,
-                UserId: transaction.UserId,
-                quantity: transaction.quantity,
-                total_price: transaction.total_price,
-                createdAt: transaction.createdAt,
-                updatedAt: transaction.updatedAt,
-                Product: transaction.product
-            }));
+            const formattedTransactions = transactions.map(transaction => this.formatTransaction(transaction));
             return formattedTransactions;
         }
         catch (error) {
@@ -56,16 +63,7 @@ export class TransactionService {
                         attributes: ['id', 'email', 'balance', 'gender', 'role'],
                     }],
             });
-            const formattedTransactions = transactions.map(transaction => ({
-                ProductId: transaction.ProductId,
-                UserId: transaction.UserId,
-                quantity: transaction.quantity,
-                total_price: transaction.total_price,
-                createdAt: transaction.createdAt,
-                updatedAt: transaction.updatedAt,
-                Product: transaction.product,
-                User: transaction.user
-            }));
+            const formattedTransactions = transactions.map(transaction => this.formatTransaction(transaction, true));
             return formattedTransactions;
         }
         catch (error) {
@@ -86,15 +84,7 @@ export class TransactionService {
                         attributes: ['id', 'title', 'price', 'stock', 'CategoryId'],
                     }],
             });
-            const formattedTransactions = transactions.map(transaction => ({
-                ProductId: transaction.ProductId,
-                UserId: transaction.UserId,
-                quantity: transaction.quantity,
-                total_price: transaction.total_price,
-                createdAt: transaction.createdAt,
-                updatedAt: transaction.updatedAt,
-                Product: transaction.product,
-            }));
+            const formattedTransactions = transactions.map(transaction => this.formatTransaction(transaction));
             return formattedTransactions;
         }
         catch (error) {

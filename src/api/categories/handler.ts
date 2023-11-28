@@ -10,12 +10,13 @@ import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import CategoryService from "../../services/category.service.js";
 import { StatusCodes } from "../../utils/constants.js";
 
+const categoryService = new CategoryService();
+
 export const findAll = async (
 	req: Request<never, never, never, never>,
 	res: Response
 ) => {
 	try {
-		const categoryService = new CategoryService();
 		const categories = await categoryService.findAll();
 
 		res.status(StatusCodes.Ok200).send({ categories });
@@ -39,7 +40,6 @@ export const add = async (
 			throw new ZodSchemaError(validationResult.errors);
 		}
 
-		const categoryService = new CategoryService();
 		const category = await categoryService.add(req.body.type);
 
 		res.status(StatusCodes.Created201).send({ category });
@@ -68,7 +68,6 @@ export const edit = async (
 			throw new ZodSchemaError(validationResult.errors);
 		}
 
-		const categoryService = new CategoryService();
 		const existedCategory = await categoryService.findById(
 			req.params.categoryId
 		);
@@ -97,7 +96,6 @@ export const remove = async (
 	res: Response
 ) => {
 	try {
-		const categoryService = new CategoryService();
 		const result = categoryService.delete(req.params.categoryId);
 
 		if (!result) {

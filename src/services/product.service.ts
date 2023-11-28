@@ -10,14 +10,14 @@ import {
 	EditProductResponseDtoType,
 	PatchProductRequestDtoType,
 	PatchProductResponseDtoType,
+	editStockProductRequestDtoType,
+	editStockProductResponseDtoType,
 } from "../db/dtos/products/index.dto.js";
 
 export class ProductService {
 	private readonly _productRepository;
-	// private readonly _categoryRepository;
 	constructor() {
 		this._productRepository = sequelize.getRepository(Product);
-		// this._categoryRepository = sequelize.getRepository(Category);
 	}
 	async findAll(): Promise<Product[]> {
 		try {
@@ -150,6 +150,28 @@ export class ProductService {
 				CategoryId,
 				createdAt,
 				updatedAt,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async editStock(
+		productId: string,
+		request: editStockProductRequestDtoType
+	): Promise<editStockProductResponseDtoType> {
+		try {
+			const result = await this._productRepository.update(request, {
+				where: {
+					id: productId,
+				},
+				returning: true,
+			});
+
+			const { stock } = result[1][0]!;
+
+			return {
+				stock,
 			};
 		} catch (error) {
 			throw error;

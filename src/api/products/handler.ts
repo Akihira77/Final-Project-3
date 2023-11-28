@@ -15,8 +15,11 @@ import {
 	PatchProductRequestDTO,
 	PatchProductRequestDtoType,
 } from "../../db/dtos/products/patch.dto.js";
+import Category from "../../db/models/category.model.js";
+import CategoryService from "../../services/category.service.js";
 
 const productService = new ProductService();
+const categoryService = new CategoryService();
 
 export const findAllProduct = async (req: Request, res: Response) => {
 	try {
@@ -38,15 +41,9 @@ export const addProduct = async (
 			CreateProductRequestDTO,
 			req.body
 		);
-		if (
-			!req.user.role ||
-			req.user.role === "" ||
-			req.user.role === "customer"
-		) {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
+
+		if (!validationResult.success) {
+			throw new ZodSchemaError(validationResult.errors);
 		}
 
 		if (req.body.price > 50000000) {
@@ -63,8 +60,14 @@ export const addProduct = async (
 			);
 		}
 
-		if (!validationResult.success) {
-			throw new ZodSchemaError(validationResult.errors);
+		const category: Category | null = await categoryService.findById(
+			req.body.CategoryId
+		);
+		if (!category) {
+			throw new CustomAPIError(
+				"category does not found",
+				StatusCodes.NotFound404
+			);
 		}
 
 		const result = await productService.add(req.body);
@@ -90,17 +93,6 @@ export const updateProduct = async (
 			EditProductRequestDTO,
 			req.body
 		);
-
-		if (
-			!req.user.role ||
-			req.user.role === "" ||
-			req.user.role === "customer"
-		) {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
-		}
 
 		if (!validationResult.success) {
 			throw new ZodSchemaError(validationResult.errors);
@@ -144,17 +136,6 @@ export const patchProduct = async (
 			req.body
 		);
 
-		if (
-			!req.user.role ||
-			req.user.role === "" ||
-			req.user.role === "customer"
-		) {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
-		}
-
 		if (!validationResult.success) {
 			throw new ZodSchemaError(validationResult.errors);
 		}
@@ -187,17 +168,6 @@ export const removeProduct = async (
 	res: Response
 ) => {
 	try {
-		if (
-			!req.user.role ||
-			req.user.role === "" ||
-			req.user.role === "customer"
-		) {
-			throw new CustomAPIError(
-				"The Customer role must not access this endpoint",
-				StatusCodes.BadRequest400
-			);
-		}
-
 		if (!req.params.productId || req.params.productId === "") {
 			throw new CustomAPIError(
 				"ProductId must be provided",

@@ -101,6 +101,23 @@ export class ProductService {
             throw error;
         }
     }
+    async editStock(productId, request) {
+        try {
+            const result = await this._productRepository.update(request, {
+                where: {
+                    id: productId,
+                },
+                returning: true,
+            });
+            const { stock } = result[1][0];
+            return {
+                stock,
+            };
+        }
+        catch (error) {
+            throw error;
+        }
+    }
     async delete(productId) {
         try {
             const result = await this._productRepository.destroy({

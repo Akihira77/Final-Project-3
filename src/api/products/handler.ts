@@ -3,7 +3,6 @@ import ProductService from "../../services/product.service.js";
 import { StatusCodes } from "../../utils/constants.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
-import Category from "../../db/models/category.model.js";
 import CategoryService from "../../services/category.service.js";
 import {
 	CreateProductRequestDTO,
@@ -56,9 +55,7 @@ export const addProduct = async (
 			);
 		}
 
-		const category: Category | null = await categoryService.findById(
-			req.body.CategoryId
-		);
+		const category = await categoryService.findById(req.body.CategoryId);
 		if (!category) {
 			throw new CustomAPIError(
 				"category does not found",

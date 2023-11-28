@@ -23,7 +23,7 @@ import { hashPassword } from "../../utils/bcrypt.js";
 export const Genders = ["male", "female"] as const;
 export const Roles = ["admin", "customer"] as const;
 
-export interface IUser {
+export interface IUserModel {
 	id: number;
 	full_name: string;
 	email: string;
@@ -36,7 +36,7 @@ export interface IUser {
 }
 
 @Table({ tableName: "Users" })
-class User extends Model implements IUser {
+class UserModel extends Model implements IUserModel {
 	@PrimaryKey
 	@AutoIncrement
 	@AllowNull(false)
@@ -94,9 +94,9 @@ class User extends Model implements IUser {
 
 	@BeforeCreate
 	@BeforeBulkCreate
-	static async hashingPassword(instance: User) {
+	static async hashingPassword(instance: UserModel) {
 		instance.password = await hashPassword(instance.password);
 	}
 }
 
-export default User;
+export default UserModel;

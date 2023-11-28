@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-
 import { StatusCodes } from "../../utils/constants.js";
 import {
 	CreateTransactionRequestDTO,
@@ -8,12 +7,9 @@ import {
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import TransactionService from "../../services/transaction.service.js";
-import Product from "../../db/models/product.model.js";
 import ProductService from "../../services/product.service.js";
-import User from "../../db/models/user.model.js";
 import UserService from "../../services/user.service.js";
 import CategoryService from "../../services/category.service.js";
-import Category from "../../db/models/category.model.js";
 
 const transactionService = new TransactionService();
 const productService = new ProductService();
@@ -86,9 +82,7 @@ export const addTransaction = async (
 
 		// VALIDASI PRODUCT
 		const productIdString: string = req.body.ProductId.toString();
-		const product: Product | null = await productService.findById(
-			productIdString
-		);
+		const product = await productService.findById(productIdString);
 		if (!product) {
 			throw new CustomAPIError(
 				"Product does not found",
@@ -105,9 +99,7 @@ export const addTransaction = async (
 		}
 
 		// VALIDASI BALANCE USER
-		const user: User | null = await userService.findByUserId(
-			req.user.userId
-		);
+		const user = await userService.findByUserId(req.user.userId);
 		if (!user) {
 			throw new CustomAPIError(
 				"The user who is logging in is not yet registered",
@@ -123,9 +115,7 @@ export const addTransaction = async (
 			);
 		}
 
-		const category: Category | null = await categoryService.findById(
-			product.CategoryId
-		);
+		const category = await categoryService.findById(product.CategoryId);
 		if (!category) {
 			throw new CustomAPIError(
 				"category does not found",

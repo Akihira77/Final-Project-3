@@ -15,7 +15,7 @@ import {
 } from "sequelize-typescript";
 import Product from "./product.model.js";
 
-export interface ICategory {
+export interface ICategoryModel {
 	id: number;
 	type: string;
 	sold_product_amount: number;
@@ -25,7 +25,7 @@ export interface ICategory {
 }
 
 @Table({ tableName: "Categories" })
-class Category extends Model implements ICategory {
+class CategoryModel extends Model implements ICategoryModel {
 	@PrimaryKey
 	@AutoIncrement
 	@AllowNull(false)
@@ -56,4 +56,4 @@ class Category extends Model implements ICategory {
 	declare updatedAt: Date;
 }
 
-export default Category;
+export default CategoryModel;

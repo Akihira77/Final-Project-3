@@ -1,8 +1,6 @@
-import User from "../db/models/user.model.js";
 import { sequelize } from "../db/db.js";
-
 import { formatCurrency } from "../utils/formattedCurrency.js";
-import Product from "../db/models/product.model.js";
+import ProductModel from "../db/models/product.model.js";
 import {
 	CreateProductRequestDtoType,
 	CreateProductResponseDtoType,
@@ -17,9 +15,9 @@ import {
 class ProductService {
 	private readonly _productRepository;
 	constructor() {
-		this._productRepository = sequelize.getRepository(Product);
+		this._productRepository = sequelize.getRepository(ProductModel);
 	}
-	async findAll(): Promise<Product[]> {
+	async findAll(): Promise<ProductModel[]> {
 		try {
 			const products = await this._productRepository.findAll({});
 
@@ -38,7 +36,7 @@ class ProductService {
 		}
 	}
 
-	async findById(productId: string): Promise<Product | null> {
+	async findById(productId: string): Promise<ProductModel | null> {
 		try {
 			const product = await this._productRepository.findOne({
 				where: {

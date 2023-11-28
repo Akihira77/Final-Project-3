@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypt = require("bcrypt");
 module.exports = {
     async up(queryInterface, Sequelize) {
@@ -20,5 +21,4 @@ module.exports = {
         await queryInterface.bulkDelete("Users", { role: "admin" }, {});
     },
 };
-export {};
 //# sourceMappingURL=20231121014829-admin-user.cjs.map

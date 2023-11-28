@@ -1,6 +1,6 @@
-import Product from "../db/models/product.model.js";
 import { sequelize } from "../db/db.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
+import Product from "../db/models/product.model.js";
 export class ProductService {
     _productRepository;
     constructor() {
@@ -9,7 +9,7 @@ export class ProductService {
     async findAll() {
         try {
             const products = await this._productRepository.findAll({});
-            products.map(product => {
+            products.map((product) => {
                 const formattedBalance = formatCurrency(product.price);
                 return {
                     ...product,
@@ -27,7 +27,7 @@ export class ProductService {
             const product = await this._productRepository.findOne({
                 where: {
                     id: productId,
-                }
+                },
             });
             return product;
         }
@@ -37,7 +37,7 @@ export class ProductService {
     }
     async add(request) {
         try {
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt } = await this._productRepository.create(request);
+            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = await this._productRepository.create(request);
             const formattedBalance = formatCurrency(price);
             return {
                 id,
@@ -61,7 +61,7 @@ export class ProductService {
                 },
                 returning: true,
             });
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt } = result[1][0];
+            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = result[1][0];
             const formattedBalance = formatCurrency(price);
             return {
                 id,
@@ -85,7 +85,7 @@ export class ProductService {
                 },
                 returning: true,
             });
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt } = result[1][0];
+            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = result[1][0];
             const formattedBalance = formatCurrency(price);
             return {
                 id,

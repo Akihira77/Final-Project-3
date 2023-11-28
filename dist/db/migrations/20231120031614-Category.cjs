@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = {
     async up(queryInterface, Sequelize) {
         await queryInterface.createTable("Categories", {
@@ -38,5 +39,4 @@ module.exports = {
         await queryInterface.dropTable("Categories");
     },
 };
-export {};
 //# sourceMappingURL=20231120031614-Category.cjs.map

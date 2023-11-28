@@ -8,7 +8,7 @@
 		"start": "set NODE_ENV=production&&node ./dist/index.js",
 		"build": "rm -rf ./dist && tsc",
 		"seed:generate": "npx sequelize seed:generate --name",
-		"db:seed": "npx sequelize db:seed:all --url" ,
+		"db:seed": "npx sequelize db:seed:all --url",
 		"db:migrate": "npx sequelize db:migrate --url",
 		"db:migrate:production": "set NODE_ENV=production&&npx sequelize db:migrate --url",
 		"migration:generate": "npx sequelize migration:generate --name",
@@ -28,23 +28,23 @@
 		"jsonwebtoken": "^9.0.2",
 		"pg": "^8.11.3",
 		"reflect-metadata": "^0.1.13",
-		"sequelize": "^6.35.0",
+		"sequelize": "^6.35.1",
 		"sequelize-cli": "^6.6.2",
-		"sequelize-typescript": "^2.1.5",
+		"sequelize-typescript": "^2.1.6",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.2",
-		"@types/cors": "^2.8.16",
+		"@types/cors": "^2.8.17",
 		"@types/express": "^4.17.21",
 		"@types/jsonwebtoken": "^9.0.5",
 		"@types/morgan": "^1.9.9",
-		"@types/node": "^20.9.1",
+		"@types/node": "^20.10.0",
 		"@types/pg": "^8.10.9",
-		"@types/validator": "^13.11.6",
+		"@types/validator": "^13.11.7",
 		"morgan": "^1.10.0",
 		"nodemon": "^3.0.1",
 		"ts-node": "^10.9.1",
-		"typescript": "^5.2.2"
+		"typescript": "^5.3.2"
 	}
 }

@@ -14,7 +14,7 @@ import {
 	editStockProductResponseDtoType,
 } from "../db/dtos/products/index.dto.js";
 
-export class ProductService {
+class ProductService {
 	private readonly _productRepository;
 	constructor() {
 		this._productRepository = sequelize.getRepository(Product);
@@ -192,3 +192,5 @@ export class ProductService {
 		}
 	}
 }
+
+export default ProductService;

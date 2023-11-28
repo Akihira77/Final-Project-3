@@ -7,9 +7,9 @@ import {
 } from "../../db/dtos/transactions/create.dto.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
-import { TransactionService } from "../../services/transaction.service.js";
+import TransactionService from "../../services/transaction.service.js";
 import Product from "../../db/models/product.model.js";
-import { ProductService } from "../../services/product.service.js";
+import ProductService from "../../services/product.service.js";
 import User from "../../db/models/user.model.js";
 import UserService from "../../services/user.service.js";
 import CategoryService from "../../services/category.service.js";
@@ -132,26 +132,16 @@ export const addTransaction = async (
 				StatusCodes.NotFound404
 			);
 		}
-		const result = await transactionService.add(req.user.userId, req.body);
-		// Kurangi stok produk setelah transaksi berhasil
-		const updatedStock = product.stock - req.body.quantity;
-		await productService.editStock(productIdString, {
-			stock: updatedStock,
-		});
-		// Kurangi balance user setelah transaksi berhasil
-		const total_price = product.price * req.body.quantity;
-		const updatedBalance = user.balance - total_price;
-		await userService.editBalanceIfTransactionSuccess(req.user.userId, {
-			balance: updatedBalance,
-		});
-		// Tambah sold_product_amount category setelah transaksi berhasil
-		const updatedSPA = category.sold_product_amount + req.body.quantity;
-		await categoryService.editSPA(product.CategoryId, {
-			sold_product_amount: updatedSPA,
-		});
+
+		const result = await transactionService.addTransaction(
+			user,
+			product,
+			category,
+			req.body
+		);
 
 		res.status(StatusCodes.Created201).send({
-			message: "Your Have Successfully purchase the product",
+			message: "You Have Successfully purchase the product",
 			transactionBill: {
 				...result,
 			},

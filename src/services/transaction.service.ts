@@ -7,6 +7,7 @@ import User from "../db/models/user.model.js";
 import { sequelize } from "../db/db.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
 import Product from "../db/models/product.model.js";
+import Category from "../db/models/category.model.js";
 
 interface FormattedTransaction {
 	ProductId: number;
@@ -19,14 +20,16 @@ interface FormattedTransaction {
 	User?: Partial<User>;
 }
 
-export class TransactionService {
+class TransactionService {
 	private readonly _transactionRepository;
 	private readonly _userRepository;
 	private readonly _productRepository;
+	private readonly _categoryRepository;
 	constructor() {
 		this._transactionRepository = sequelize.getRepository(Transaction);
 		this._userRepository = sequelize.getRepository(User);
 		this._productRepository = sequelize.getRepository(Product);
+		this._categoryRepository = sequelize.getRepository(Category);
 	}
 
 	private formatTransaction(
@@ -173,6 +176,76 @@ export class TransactionService {
 		}
 	}
 
+	async addTransaction(
+		user: User,
+		product: Product,
+		category: Category,
+		{ ProductId, quantity }: CreateTransactionRequestDtoType
+	): Promise<CreateTransactionResponseDtoType> {
+		try {
+			const result = await sequelize.transaction(async (t) => {
+				// Kurangi stok produk setelah transaksi berhasil
+				const updatedStock = product.stock - quantity;
+				await this._productRepository.update(
+					{ stock: updatedStock },
+					{
+						where: {
+							id: ProductId,
+						},
+						transaction: t,
+					}
+				);
+
+				// Kurangi balance user setelah transaksi berhasil
+				const total_price = product.price * quantity;
+				const updatedBalance = user.balance - total_price;
+				await this._userRepository.update(
+					{ balance: updatedBalance },
+					{
+						where: {
+							id: user.id,
+						},
+						transaction: t,
+					}
+				);
+
+				// Tambah sold_product_amount category setelah transaksi berhasil
+				const updatedSPA = category.sold_product_amount + quantity;
+				await this._categoryRepository.update(
+					{ sold_product_amount: updatedSPA },
+					{
+						where: {
+							id: category.id,
+						},
+						transaction: t,
+					}
+				);
+
+				const transaction = await this._transactionRepository.create(
+					{
+						UserId: user.id,
+						ProductId,
+						quantity,
+						total_price,
+					},
+					{ transaction: t }
+				);
+
+				return transaction;
+			});
+
+			const formattedBalance = formatCurrency(result.total_price);
+
+			return {
+				total_price: formattedBalance,
+				quantity: result.quantity,
+				productName: product.title,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	async add(
 		userId: number,
 		{ ProductId, quantity }: CreateTransactionRequestDtoType
@@ -206,3 +279,5 @@ export class TransactionService {
 		}
 	}
 }
+
+export default TransactionService;

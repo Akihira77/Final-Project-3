@@ -28,10 +28,6 @@ module.exports = {
 				type: Sequelize.INTEGER,
 			},
 			CategoryId: {
-				allowNull: false,
-				type: Sequelize.INTEGER,
-			},
-			CategoryId: {
 				type: Sequelize.INTEGER,
 				allowNull: false,
 				references: {

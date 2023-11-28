@@ -137,6 +137,21 @@ class UserService {
             throw error;
         }
     }
+    async editBalanceIfTransactionSuccess(userId, request) {
+        try {
+            const result = await this._userRepository.update(request, {
+                where: {
+                    id: userId,
+                },
+                returning: true,
+            });
+            const updatedUser = result[1][0];
+            return updatedUser.balance;
+        }
+        catch (error) {
+            throw error;
+        }
+    }
 }
 export default UserService;
 //# sourceMappingURL=user.service.js.map

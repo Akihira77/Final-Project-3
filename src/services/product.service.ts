@@ -1,57 +1,51 @@
+import User from "../db/models/user.model.js";
+import { sequelize } from "../db/db.js";
+
+import { formatCurrency } from "../utils/formattedCurrency.js";
+import Product from "../db/models/product.model.js";
 import {
 	CreateProductRequestDtoType,
 	CreateProductResponseDtoType,
-} from "./../db/dtos/products/create.dto";
-import Product from "../db/models/product.model.js";
-// import Category from "../db/models/category.model.js";
-import User from "../db/models/user.model.js";
-import { sequelize } from "../db/db.js";
-import {
 	EditProductRequestDtoType,
 	EditProductResponseDtoType,
-} from "../db/dtos/products/edit.dto.js";
-import {
 	PatchProductRequestDtoType,
 	PatchProductResponseDtoType,
-} from "../db/dtos/products/patch.dto";
-import { formatCurrency } from "../utils/formattedCurrency.js";
-
+	editStockProductRequestDtoType,
+	editStockProductResponseDtoType,
+} from "../db/dtos/products/index.dto.js";
 
 export class ProductService {
 	private readonly _productRepository;
-	// private readonly _categoryRepository;
 	constructor() {
 		this._productRepository = sequelize.getRepository(Product);
-		// this._categoryRepository = sequelize.getRepository(Category);
 	}
-
 	async findAll(): Promise<Product[]> {
-    try {
-        const products = await this._productRepository.findAll({});
-		
-        products.map(product => {
-            const formattedBalance = formatCurrency(product.price);
+		try {
+			const products = await this._productRepository.findAll({});
 
-            return {
-                ...product,
-                price: formattedBalance,
-            };
-        });
+			products.map((product) => {
+				const formattedBalance = formatCurrency(product.price);
 
-        return products;
-    } catch (error) {
-        throw error;
-    }
-}
+				return {
+					...product,
+					price: formattedBalance,
+				};
+			});
+
+			return products;
+		} catch (error) {
+			throw error;
+		}
+	}
 
 	async findById(productId: string): Promise<Product | null> {
 		try {
 			const product = await this._productRepository.findOne({
 				where: {
 					id: productId,
-				}
+				},
 			});
-	
+
 			return product;
 		} catch (error) {
 			throw error;
@@ -60,10 +54,17 @@ export class ProductService {
 
 	async add(
 		request: CreateProductRequestDtoType
-		): Promise<CreateProductResponseDtoType> {
+	): Promise<CreateProductResponseDtoType> {
 		try {
-			const { id, title, price, stock, CategoryId, createdAt, updatedAt } =
-				await this._productRepository.create(request);
+			const {
+				id,
+				title,
+				price,
+				stock,
+				CategoryId,
+				createdAt,
+				updatedAt,
+			} = await this._productRepository.create(request);
 
 			const formattedBalance = formatCurrency(price);
 
@@ -72,9 +73,9 @@ export class ProductService {
 				title,
 				price: formattedBalance,
 				stock,
-                CategoryId,
-                createdAt,
-                updatedAt,
+				CategoryId,
+				createdAt,
+				updatedAt,
 			};
 		} catch (error) {
 			throw error;
@@ -88,13 +89,20 @@ export class ProductService {
 		try {
 			const result = await this._productRepository.update(request, {
 				where: {
-					id: productId,			
+					id: productId,
 				},
 				returning: true,
 			});
 
-			const { id, title, price, stock, CategoryId, createdAt, updatedAt } =
-				result[1][0]!;
+			const {
+				id,
+				title,
+				price,
+				stock,
+				CategoryId,
+				createdAt,
+				updatedAt,
+			} = result[1][0]!;
 			const formattedBalance = formatCurrency(price);
 
 			return {
@@ -118,13 +126,20 @@ export class ProductService {
 		try {
 			const result = await this._productRepository.update(request, {
 				where: {
-					id: productId,			
+					id: productId,
 				},
 				returning: true,
 			});
 
-			const { id, title, price, stock, CategoryId, createdAt, updatedAt } =
-				result[1][0]!;
+			const {
+				id,
+				title,
+				price,
+				stock,
+				CategoryId,
+				createdAt,
+				updatedAt,
+			} = result[1][0]!;
 			const formattedBalance = formatCurrency(price);
 
 			return {
@@ -141,12 +156,32 @@ export class ProductService {
 		}
 	}
 
-	async delete(
-		productId: string
-	): Promise<boolean> {
+	async editStock(
+		productId: string,
+		request: editStockProductRequestDtoType
+	): Promise<editStockProductResponseDtoType> {
+		try {
+			const result = await this._productRepository.update(request, {
+				where: {
+					id: productId,
+				},
+				returning: true,
+			});
+
+			const { stock } = result[1][0]!;
+
+			return {
+				stock,
+			};
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async delete(productId: string): Promise<boolean> {
 		try {
 			const result = await this._productRepository.destroy({
-				where: { 
+				where: {
 					id: productId,
 				},
 			});
@@ -157,4 +192,3 @@ export class ProductService {
 		}
 	}
 }
-

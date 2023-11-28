@@ -10,6 +10,7 @@ import {
 	NotEmpty,
 	PrimaryKey,
 	Table,
+	Unique,
 	UpdatedAt,
 } from "sequelize-typescript";
 import Product from "./product.model.js";
@@ -33,6 +34,7 @@ class Category extends Model implements ICategory {
 
 	@NotEmpty
 	@AllowNull(false)
+	@Unique
 	@Column(DataType.STRING)
 	declare type: string;
 

@@ -1,7 +1,7 @@
-import { PORT } from "./config/index.config.js";
+import { PORT } from "./config/config.js";
 import { startServer } from "./express-app.js";
 
-const app = startServer();
+const app = await startServer();
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);

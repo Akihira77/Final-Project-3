@@ -17,8 +17,4 @@ categoryEndpoints
 	.patch("/:categoryId", categoryHandler.edit)
 	.delete("/:categoryId", categoryHandler.remove);
 
-// categoryEndpoints.post("", categoryHandler.add);
-// categoryEndpoints.patch("/:categoryId", categoryHandler.edit);
-// categoryEndpoints.delete("/:categoryId", categoryHandler.remove);
-
 export default categoryEndpoints;

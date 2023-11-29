@@ -8,9 +8,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, NotEmpty, PrimaryKey, Table, UpdatedAt, Model, } from "sequelize-typescript";
-import Product from "./product.model.js";
-import User from "./user.model.js";
-let Transaction = class Transaction extends Model {
+import ProductModel from "./product.model.js";
+import UserModel from "./user.model.js";
+let TransactionModel = class TransactionModel extends Model {
 };
 __decorate([
     PrimaryKey,
@@ -18,53 +18,53 @@ __decorate([
     AutoIncrement,
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Transaction.prototype, "id", void 0);
+], TransactionModel.prototype, "id", void 0);
 __decorate([
     AllowNull(false),
-    ForeignKey(() => Product),
+    ForeignKey(() => ProductModel),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Transaction.prototype, "ProductId", void 0);
+], TransactionModel.prototype, "ProductId", void 0);
 __decorate([
-    BelongsTo(() => Product),
+    BelongsTo(() => ProductModel),
     __metadata("design:type", void 0)
-], Transaction.prototype, "product", void 0);
+], TransactionModel.prototype, "Product", void 0);
 __decorate([
     AllowNull(false),
-    ForeignKey(() => User),
+    ForeignKey(() => UserModel),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Transaction.prototype, "UserId", void 0);
+], TransactionModel.prototype, "UserId", void 0);
 __decorate([
-    BelongsTo(() => User),
+    BelongsTo(() => UserModel),
     __metadata("design:type", void 0)
-], Transaction.prototype, "user", void 0);
+], TransactionModel.prototype, "User", void 0);
 __decorate([
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", Number)
-], Transaction.prototype, "quantity", void 0);
+], TransactionModel.prototype, "quantity", void 0);
 __decorate([
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", Number)
-], Transaction.prototype, "total_price", void 0);
+], TransactionModel.prototype, "total_price", void 0);
 __decorate([
     AllowNull(false),
     CreatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Transaction.prototype, "createdAt", void 0);
+], TransactionModel.prototype, "createdAt", void 0);
 __decorate([
     AllowNull(false),
     UpdatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Transaction.prototype, "updatedAt", void 0);
-Transaction = __decorate([
+], TransactionModel.prototype, "updatedAt", void 0);
+TransactionModel = __decorate([
     Table({ tableName: "Transactions" })
-], Transaction);
-export default Transaction;
+], TransactionModel);
+export default TransactionModel;
 //# sourceMappingURL=transaction.model.js.map

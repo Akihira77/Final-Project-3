@@ -1,12 +1,12 @@
 import { sequelize } from "../db/db.js";
-import User from "../db/models/user.model.js";
+import UserModel from "../db/models/user.model.js";
 import { validate } from "../utils/bcrypt.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
 import { jwtSign } from "../utils/jwt.js";
 class UserService {
     _userRepository;
     constructor() {
-        this._userRepository = sequelize.getRepository(User);
+        this._userRepository = sequelize.getRepository(UserModel);
     }
     async findAll() {
         try {
@@ -94,8 +94,8 @@ class UserService {
             return {
                 user: {
                     id,
-                    email,
                     full_name,
+                    email,
                     createdAt,
                     updatedAt,
                 },

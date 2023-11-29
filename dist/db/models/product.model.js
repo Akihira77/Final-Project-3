@@ -8,8 +8,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { AllowNull, AutoIncrement, BelongsTo, Column, CreatedAt, DataType, ForeignKey, NotEmpty, PrimaryKey, Table, UpdatedAt, Model, Max, Min, } from "sequelize-typescript";
-import Category from "./category.model.js";
-let Product = class Product extends Model {
+import CategoryModel from "./category.model.js";
+let ProductModel = class ProductModel extends Model {
 };
 __decorate([
     PrimaryKey,
@@ -17,13 +17,13 @@ __decorate([
     AutoIncrement,
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Product.prototype, "id", void 0);
+], ProductModel.prototype, "id", void 0);
 __decorate([
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", String)
-], Product.prototype, "title", void 0);
+], ProductModel.prototype, "title", void 0);
 __decorate([
     Max(50000000),
     Min(0),
@@ -31,38 +31,38 @@ __decorate([
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", Number)
-], Product.prototype, "price", void 0);
+], ProductModel.prototype, "price", void 0);
 __decorate([
     Min(5),
     AllowNull(false),
     NotEmpty,
     Column(DataType.STRING),
     __metadata("design:type", Number)
-], Product.prototype, "stock", void 0);
+], ProductModel.prototype, "stock", void 0);
 __decorate([
     AllowNull(false),
-    ForeignKey(() => Category),
+    ForeignKey(() => CategoryModel),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], Product.prototype, "CategoryId", void 0);
+], ProductModel.prototype, "CategoryId", void 0);
 __decorate([
-    BelongsTo(() => Category),
+    BelongsTo(() => CategoryModel),
     __metadata("design:type", void 0)
-], Product.prototype, "category", void 0);
+], ProductModel.prototype, "Category", void 0);
 __decorate([
     AllowNull(false),
     CreatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Product.prototype, "createdAt", void 0);
+], ProductModel.prototype, "createdAt", void 0);
 __decorate([
     AllowNull(false),
     UpdatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], Product.prototype, "updatedAt", void 0);
-Product = __decorate([
+], ProductModel.prototype, "updatedAt", void 0);
+ProductModel = __decorate([
     Table({ tableName: "Products" })
-], Product);
-export default Product;
+], ProductModel);
+export default ProductModel;
 //# sourceMappingURL=product.model.js.map

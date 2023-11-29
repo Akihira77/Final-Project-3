@@ -1,22 +1,22 @@
 import { sequelize } from "../db/db.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
-import Product from "../db/models/product.model.js";
-export class ProductService {
+import ProductModel from "../db/models/product.model.js";
+class ProductService {
     _productRepository;
     constructor() {
-        this._productRepository = sequelize.getRepository(Product);
+        this._productRepository = sequelize.getRepository(ProductModel);
     }
     async findAll() {
         try {
-            const products = await this._productRepository.findAll({});
-            products.map((product) => {
+            const products = await this._productRepository.findAll();
+            const formattedProducts = products.map((product) => {
                 const formattedBalance = formatCurrency(product.price);
                 return {
-                    ...product,
+                    ...product.dataValues,
                     price: formattedBalance,
                 };
             });
-            return products;
+            return formattedProducts;
         }
         catch (error) {
             throw error;
@@ -37,16 +37,11 @@ export class ProductService {
     }
     async add(request) {
         try {
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = await this._productRepository.create(request);
-            const formattedBalance = formatCurrency(price);
+            const product = await this._productRepository.create(request);
+            const formattedBalance = formatCurrency(product.price);
             return {
-                id,
-                title,
+                ...product.dataValues,
                 price: formattedBalance,
-                stock,
-                CategoryId,
-                createdAt,
-                updatedAt,
             };
         }
         catch (error) {
@@ -61,23 +56,18 @@ export class ProductService {
                 },
                 returning: true,
             });
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = result[1][0];
-            const formattedBalance = formatCurrency(price);
+            const product = result[1][0];
+            const formattedBalance = formatCurrency(product.price);
             return {
-                id,
-                title,
+                ...product.dataValues,
                 price: formattedBalance,
-                stock,
-                CategoryId,
-                createdAt,
-                updatedAt,
             };
         }
         catch (error) {
             throw error;
         }
     }
-    async patch(productId, request) {
+    async changeCategory(productId, request) {
         try {
             const result = await this._productRepository.update(request, {
                 where: {
@@ -85,33 +75,11 @@ export class ProductService {
                 },
                 returning: true,
             });
-            const { id, title, price, stock, CategoryId, createdAt, updatedAt, } = result[1][0];
-            const formattedBalance = formatCurrency(price);
+            const product = result[1][0];
+            const formattedBalance = formatCurrency(product.price);
             return {
-                id,
-                title,
+                ...product.dataValues,
                 price: formattedBalance,
-                stock,
-                CategoryId,
-                createdAt,
-                updatedAt,
-            };
-        }
-        catch (error) {
-            throw error;
-        }
-    }
-    async editStock(productId, request) {
-        try {
-            const result = await this._productRepository.update(request, {
-                where: {
-                    id: productId,
-                },
-                returning: true,
-            });
-            const { stock } = result[1][0];
-            return {
-                stock,
             };
         }
         catch (error) {
@@ -132,4 +100,5 @@ export class ProductService {
         }
     }
 }
+export default ProductService;
 //# sourceMappingURL=product.service.js.map

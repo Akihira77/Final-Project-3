@@ -1,7 +1,9 @@
 import {
 	CreateTransactionRequestDtoType,
 	CreateTransactionResponseDtoType,
-} from "../db/dtos/transactions/create.dto.js";
+	FormattedTransactionDtoType,
+	GetByIdResponseDtoType,
+} from "../db/dtos/transactions/index.dto.js";
 import TransactionModel from "../db/models/transaction.model.js";
 import UserModel from "../db/models/user.model.js";
 import { sequelize } from "../db/db.js";
@@ -9,17 +11,6 @@ import { formatCurrency } from "../utils/formattedCurrency.js";
 import ProductModel from "../db/models/product.model.js";
 import CategoryModel from "../db/models/category.model.js";
 import { Transaction } from "sequelize";
-
-interface FormattedTransaction {
-	ProductId: number;
-	UserId: number;
-	quantity: number;
-	total_price: number;
-	createdAt: Date;
-	updatedAt: Date;
-	Product: Partial<ProductModel>;
-	User?: Partial<UserModel>;
-}
 
 class TransactionService {
 	private readonly _transactionRepository;
@@ -34,21 +25,24 @@ class TransactionService {
 	}
 
 	private formatTransaction(
-		transaction: any,
+		transaction: TransactionModel,
 		includeUser = false
-	): FormattedTransaction {
-		const formattedTransaction: FormattedTransaction = {
+	): FormattedTransactionDtoType {
+		const formattedTransaction: FormattedTransactionDtoType = {
 			ProductId: transaction.ProductId,
 			UserId: transaction.UserId,
 			quantity: transaction.quantity,
-			total_price: transaction.total_price,
+			total_price: formatCurrency(transaction.total_price),
 			createdAt: transaction.createdAt,
 			updatedAt: transaction.updatedAt,
-			Product: transaction.product,
+			Product: {
+				...transaction.Product.dataValues,
+				price: formatCurrency(transaction.Product.price),
+			},
 		};
 
-		if (includeUser && transaction.user) {
-			formattedTransaction.User = transaction.user;
+		if (includeUser && transaction.User) {
+			formattedTransaction.User = transaction.User;
 		}
 
 		return formattedTransaction;
@@ -56,7 +50,7 @@ class TransactionService {
 
 	async findAllTransactionUser(
 		userId: number
-	): Promise<FormattedTransaction[] | null> {
+	): Promise<FormattedTransactionDtoType[]> {
 		try {
 			const transactions = await this._transactionRepository.findAll({
 				where: {
@@ -94,7 +88,7 @@ class TransactionService {
 		}
 	}
 
-	async findAllTransactionAdmin(): Promise<FormattedTransaction[] | null> {
+	async findAllTransactionAdmin(): Promise<FormattedTransactionDtoType[]> {
 		try {
 			const transactions = await this._transactionRepository.findAll({
 				attributes: [
@@ -139,9 +133,9 @@ class TransactionService {
 		}
 	}
 
-	async findTransactionById(
+	async findTransactionByIdAdmin(
 		transactionId: string
-	): Promise<FormattedTransaction> {
+	): Promise<GetByIdResponseDtoType> {
 		try {
 			const transaction = await this._transactionRepository.findByPk(
 				transactionId,
@@ -157,6 +151,7 @@ class TransactionService {
 					include: [
 						{
 							model: this._productRepository,
+							as: "Product",
 							attributes: [
 								"id",
 								"title",
@@ -169,6 +164,10 @@ class TransactionService {
 				}
 			);
 
+			if (!transaction) {
+				return "Invalid TransactionHistory";
+			}
+
 			const formattedTransactions = this.formatTransaction(transaction);
 
 			return formattedTransactions;
@@ -177,7 +176,51 @@ class TransactionService {
 		}
 	}
 
-	async addTransaction(
+	async findTransactionByIdCustomer(
+		transactionId: string,
+		userId: number
+	): Promise<GetByIdResponseDtoType> {
+		try {
+			const transaction = await this._transactionRepository.findOne({
+				where: {
+					id: transactionId,
+					UserId: userId,
+				},
+				attributes: [
+					"ProductId",
+					"UserId",
+					"quantity",
+					"total_price",
+					"createdAt",
+					"updatedAt",
+				],
+				include: [
+					{
+						model: this._productRepository,
+						attributes: [
+							"id",
+							"title",
+							"price",
+							"stock",
+							"CategoryId",
+						],
+					},
+				],
+			});
+
+			if (!transaction) {
+				return "Invalid TransactionHistory";
+			}
+
+			const formattedTransactions = this.formatTransaction(transaction);
+
+			return formattedTransactions;
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async add(
 		user: UserModel,
 		product: ProductModel,
 		category: CategoryModel,
@@ -190,7 +233,7 @@ class TransactionService {
 						Transaction.ISOLATION_LEVELS.REPEATABLE_READ,
 				},
 				async (t: Transaction) => {
-					// Kurangi stok produk setelah transaksi berhasil
+					// Kurangi stok produk setelah pengecekan jumlah
 					const updatedStock = product.stock - quantity;
 					await this._productRepository.update(
 						{ stock: updatedStock },
@@ -202,7 +245,7 @@ class TransactionService {
 						}
 					);
 
-					// Kurangi balance user setelah transaksi berhasil
+					// Kurangi balance user setelah pengecekan balance user
 					const total_price = product.price * quantity;
 					const updatedBalance = user.balance - total_price;
 					await this._userRepository.update(
@@ -215,7 +258,7 @@ class TransactionService {
 						}
 					);
 
-					// Tambah sold_product_amount category setelah transaksi berhasil
+					// Tambah sold_product_amount category setelah pengecekan product dan balance user
 					const updatedSPA = category.sold_product_amount + quantity;
 					await this._categoryRepository.update(
 						{ sold_product_amount: updatedSPA },
@@ -227,7 +270,8 @@ class TransactionService {
 						}
 					);
 
-					const transaction =
+					// Persist data user transaction
+					const savedTransaction =
 						await this._transactionRepository.create(
 							{
 								UserId: user.id,
@@ -238,7 +282,7 @@ class TransactionService {
 							{ transaction: t }
 						);
 
-					return transaction;
+					return savedTransaction;
 				}
 			);
 
@@ -247,40 +291,7 @@ class TransactionService {
 			return {
 				total_price: formattedBalance,
 				quantity: result.quantity,
-				productName: product.title,
-			};
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async add(
-		userId: number,
-		{ ProductId, quantity }: CreateTransactionRequestDtoType
-	): Promise<CreateTransactionResponseDtoType> {
-		try {
-			const product: ProductModel | null =
-				await this._productRepository.findByPk(ProductId);
-
-			if (!product) {
-				throw new Error("Product not found");
-			}
-
-			const total_price = product.price * quantity;
-
-			const transaction = await this._transactionRepository.create({
-				UserId: userId,
-				ProductId,
-				quantity,
-				total_price,
-			});
-
-			const formattedBalance = formatCurrency(total_price);
-
-			return {
-				total_price: formattedBalance,
-				quantity: transaction.quantity,
-				productName: product.title,
+				product_name: product.title,
 			};
 		} catch (error) {
 			throw error;

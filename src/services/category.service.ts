@@ -1,8 +1,4 @@
 import { sequelize } from "../db/db.js";
-import {
-	EditSPACategoryRequestDtoType,
-	editSPACategoryResponseDtoType,
-} from "../db/dtos/category/editSPA.dto.js";
 import CategoryModel from "../db/models/category.model.js";
 import ProductModel from "../db/models/product.model.js";
 
@@ -58,28 +54,6 @@ class CategoryService {
 			const updatedCategory = affectedCategories["1"][0]!;
 
 			return updatedCategory;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async editSPA(
-		categoryId: number,
-		request: EditSPACategoryRequestDtoType
-	): Promise<editSPACategoryResponseDtoType> {
-		try {
-			const result = await this._categoryRepository.update(request, {
-				where: {
-					id: categoryId,
-				},
-				returning: true,
-			});
-
-			const { sold_product_amount } = result[1][0]!;
-
-			return {
-				sold_product_amount,
-			};
 		} catch (error) {
 			throw error;
 		}

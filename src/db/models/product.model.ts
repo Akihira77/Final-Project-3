@@ -22,7 +22,7 @@ export interface IProductModel {
 	price: number;
 	stock: number;
 	CategoryId: number;
-	category: CategoryModel;
+	Category: CategoryModel;
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -59,7 +59,7 @@ class ProductModel extends Model implements IProductModel {
 	declare CategoryId: number;
 
 	@BelongsTo(() => CategoryModel)
-	declare category: ReturnType<() => CategoryModel>;
+	declare Category: ReturnType<() => CategoryModel>;
 
 	@AllowNull(false)
 	@CreatedAt

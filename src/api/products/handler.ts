@@ -114,7 +114,7 @@ export const updateProduct = async (
 	}
 };
 
-export const patchProduct = async (
+export const changeCategory = async (
 	req: Request<
 		{ productId: string },
 		never,
@@ -144,7 +144,17 @@ export const patchProduct = async (
 			);
 		}
 
-		const result = await productService.patch(
+		const existedCategory = await categoryService.findById(
+			req.body.CategoryId
+		);
+		if (!existedCategory) {
+			throw new CustomAPIError(
+				"Category does not found",
+				StatusCodes.NotFound404
+			);
+		}
+
+		const result = await productService.changeCategory(
 			req.params.productId,
 			req.body
 		);

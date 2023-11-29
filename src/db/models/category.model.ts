@@ -19,7 +19,7 @@ export interface ICategoryModel {
 	id: number;
 	type: string;
 	sold_product_amount: number;
-	products: Product[];
+	Products: Product[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -45,7 +45,7 @@ class CategoryModel extends Model implements ICategoryModel {
 	declare sold_product_amount: number;
 
 	@HasMany(() => Product)
-	declare products: Product[];
+	declare Products: Product[];
 
 	@CreatedAt
 	@Column(DataType.DATE)

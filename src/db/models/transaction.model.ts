@@ -18,9 +18,9 @@ import UserModel from "./user.model.js";
 export interface ITransactionModel {
 	id: number;
 	ProductId: number;
-	product: ProductModel;
+	Product: ProductModel;
 	UserId: number;
-	user: UserModel;
+	User: UserModel;
 	quantity: number;
 	total_price: number;
 	createdAt: Date;
@@ -41,7 +41,7 @@ class TransactionModel extends Model implements ITransactionModel {
 	declare ProductId: number;
 
 	@BelongsTo(() => ProductModel)
-	declare product: ReturnType<() => ProductModel>;
+	declare Product: ReturnType<() => ProductModel>;
 
 	@AllowNull(false)
 	@ForeignKey(() => UserModel)
@@ -49,7 +49,7 @@ class TransactionModel extends Model implements ITransactionModel {
 	declare UserId: number;
 
 	@BelongsTo(() => UserModel)
-	declare user: ReturnType<() => UserModel>;
+	declare User: ReturnType<() => UserModel>;
 
 	@AllowNull(false)
 	@NotEmpty

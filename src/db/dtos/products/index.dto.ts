@@ -1,3 +1,4 @@
+import { ProductDTO, ProductDtoType } from "./main.dto.js";
 import {
 	CreateProductRequestDTO,
 	CreateProductRequestDtoType,
@@ -39,4 +40,6 @@ export {
 	PatchProductRequestDtoType,
 	PatchProductResponseDTO,
 	PatchProductResponseDtoType,
+	ProductDTO,
+	ProductDtoType,
 };

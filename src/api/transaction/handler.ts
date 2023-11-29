@@ -1,15 +1,16 @@
 import { Request, Response } from "express";
 import { StatusCodes } from "../../utils/constants.js";
-import {
-	CreateTransactionRequestDTO,
-	CreateTransactionRequestDtoType,
-} from "../../db/dtos/transactions/create.dto.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import TransactionService from "../../services/transaction.service.js";
 import ProductService from "../../services/product.service.js";
 import UserService from "../../services/user.service.js";
 import CategoryService from "../../services/category.service.js";
+import {
+	CreateTransactionRequestDTO,
+	CreateTransactionRequestDtoType,
+	GetByIdResponseDtoType,
+} from "../../db/dtos/transactions/index.dto.js";
 
 const transactionService = new TransactionService();
 const productService = new ProductService();
@@ -18,11 +19,10 @@ const categoryService = new CategoryService();
 
 export const findAllTransactionUser = async (req: Request, res: Response) => {
 	try {
-		const transactions = await transactionService.findAllTransactionUser(
-			req.user.userId
-		);
+		const transactionHistories =
+			await transactionService.findAllTransactionUser(req.user.userId);
 
-		res.status(StatusCodes.Ok200).send({ transactions });
+		res.status(StatusCodes.Ok200).send({ transactionHistories });
 		return;
 	} catch (error) {
 		throw error;
@@ -31,9 +31,10 @@ export const findAllTransactionUser = async (req: Request, res: Response) => {
 
 export const findAllTransactionAdmin = async (req: Request, res: Response) => {
 	try {
-		const transactions = await transactionService.findAllTransactionAdmin();
+		const transactionHistories =
+			await transactionService.findAllTransactionAdmin();
 
-		res.status(StatusCodes.Ok200).send({ transactions });
+		res.status(StatusCodes.Ok200).send({ transactionHistories });
 		return;
 	} catch (error) {
 		throw error;
@@ -45,21 +46,25 @@ export const findTransactionById = async (
 	res: Response
 ) => {
 	try {
-		const transaction = await transactionService.findTransactionById(
-			req.params.transactionId
-		);
-
-		if (
-			req.user.role !== "admin" ||
-			transaction.UserId !== req.user.userId
-		) {
-			throw new CustomAPIError(
-				"User cant access this resource",
-				StatusCodes.Forbidden403
+		const userRole = req.user.role;
+		let result: GetByIdResponseDtoType;
+		if (userRole === "admin") {
+			result = await transactionService.findTransactionByIdAdmin(
+				req.params.transactionId
+			);
+		} else {
+			result = await transactionService.findTransactionByIdCustomer(
+				req.params.transactionId,
+				req.user.userId
 			);
 		}
 
-		res.status(StatusCodes.Ok200).send({ ...transaction });
+		if (typeof result === "string") {
+			res.status(StatusCodes.NotFound404).send({ message: result });
+			return;
+		}
+
+		res.status(StatusCodes.Ok200).send({ ...result });
 		return;
 	} catch (error) {
 		throw error;
@@ -123,7 +128,7 @@ export const addTransaction = async (
 			);
 		}
 
-		const result = await transactionService.addTransaction(
+		const result = await transactionService.add(
 			user,
 			product,
 			category,

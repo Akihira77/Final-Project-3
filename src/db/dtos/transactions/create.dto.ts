@@ -7,15 +7,18 @@ export const CreateTransactionRequestDTO = z
 	})
 	.strict();
 
-export type CreateTransactionRequestDtoType = z.infer<typeof CreateTransactionRequestDTO>;
+export type CreateTransactionRequestDtoType = z.infer<
+	typeof CreateTransactionRequestDTO
+>;
 
 export const CreateTransactionResponseDTO = z
 	.object({
 		total_price: z.string(),
-        quantity: z.number(),
-		productName: z.string(),
+		quantity: z.number(),
+		product_name: z.string(),
 	})
 	.strict();
 
-export type CreateTransactionResponseDtoType = z.infer<typeof CreateTransactionResponseDTO>;
-
+export type CreateTransactionResponseDtoType = z.infer<
+	typeof CreateTransactionResponseDTO
+>;

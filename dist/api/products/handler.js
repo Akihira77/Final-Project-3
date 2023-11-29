@@ -1,11 +1,9 @@
-import { ProductService } from "../../services/product.service.js";
+import ProductService from "../../services/product.service.js";
 import { StatusCodes } from "../../utils/constants.js";
-import { CreateProductRequestDTO, } from "../../db/dtos/products/create.dto.js";
 import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
-import { EditProductRequestDTO, } from "../../db/dtos/products/edit.dto.js";
-import { PatchProductRequestDTO, } from "../../db/dtos/products/patch.dto.js";
 import CategoryService from "../../services/category.service.js";
+import { CreateProductRequestDTO, EditProductRequestDTO, PatchProductRequestDTO, } from "../../db/dtos/products/index.dto.js";
 const productService = new ProductService();
 const categoryService = new CategoryService();
 export const findAllProduct = async (req, res) => {
@@ -21,6 +19,9 @@ export const findAllProduct = async (req, res) => {
 export const addProduct = async (req, res) => {
     try {
         const validationResult = validateZodSchema(CreateProductRequestDTO, req.body);
+        if (!validationResult.success) {
+            throw new ZodSchemaError(validationResult.errors);
+        }
         if (req.body.price > 50000000) {
             throw new CustomAPIError("Maximum Price is Rp. 50.000.000 ", StatusCodes.BadRequest400);
         }
@@ -30,9 +31,6 @@ export const addProduct = async (req, res) => {
         const category = await categoryService.findById(req.body.CategoryId);
         if (!category) {
             throw new CustomAPIError("category does not found", StatusCodes.NotFound404);
-        }
-        if (!validationResult.success) {
-            throw new ZodSchemaError(validationResult.errors);
         }
         const result = await productService.add(req.body);
         res.status(StatusCodes.Created201).send({ ...result });
@@ -60,7 +58,7 @@ export const updateProduct = async (req, res) => {
         throw error;
     }
 };
-export const patchProduct = async (req, res) => {
+export const changeCategory = async (req, res) => {
     try {
         const validationResult = validateZodSchema(PatchProductRequestDTO, req.body);
         if (!validationResult.success) {
@@ -70,7 +68,11 @@ export const patchProduct = async (req, res) => {
         if (!existedProduct) {
             throw new CustomAPIError("Product does not found", StatusCodes.NotFound404);
         }
-        const result = await productService.patch(req.params.productId, req.body);
+        const existedCategory = await categoryService.findById(req.body.CategoryId);
+        if (!existedCategory) {
+            throw new CustomAPIError("Category does not found", StatusCodes.NotFound404);
+        }
+        const result = await productService.changeCategory(req.params.productId, req.body);
         res.status(StatusCodes.Ok200).send({ product: result });
         return;
     }

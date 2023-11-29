@@ -1,22 +1,17 @@
 import { Request, Response } from "express";
-import { ProductService } from "../../services/product.service.js";
+import ProductService from "../../services/product.service.js";
 import { StatusCodes } from "../../utils/constants.js";
+import { validateZodSchema } from "../../utils/validateZodSchema.js";
+import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
+import CategoryService from "../../services/category.service.js";
 import {
 	CreateProductRequestDTO,
 	CreateProductRequestDtoType,
-} from "../../db/dtos/products/create.dto.js";
-import { validateZodSchema } from "../../utils/validateZodSchema.js";
-import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
-import {
 	EditProductRequestDTO,
 	EditProductRequestDtoType,
-} from "../../db/dtos/products/edit.dto.js";
-import {
 	PatchProductRequestDTO,
 	PatchProductRequestDtoType,
-} from "../../db/dtos/products/patch.dto.js";
-import Category from "../../db/models/category.model.js";
-import CategoryService from "../../services/category.service.js";
+} from "../../db/dtos/products/index.dto.js";
 
 const productService = new ProductService();
 const categoryService = new CategoryService();
@@ -46,7 +41,7 @@ export const addProduct = async (
 			throw new ZodSchemaError(validationResult.errors);
 		}
 
-		if (req.body.price > 50000000) {
+		if (req.body.price > 50_000_000) {
 			throw new CustomAPIError(
 				"Maximum Price is Rp. 50.000.000 ",
 				StatusCodes.BadRequest400
@@ -60,9 +55,7 @@ export const addProduct = async (
 			);
 		}
 
-		const category: Category | null = await categoryService.findById(
-			req.body.CategoryId
-		);
+		const category = await categoryService.findById(req.body.CategoryId);
 		if (!category) {
 			throw new CustomAPIError(
 				"category does not found",
@@ -121,7 +114,7 @@ export const updateProduct = async (
 	}
 };
 
-export const patchProduct = async (
+export const changeCategory = async (
 	req: Request<
 		{ productId: string },
 		never,
@@ -151,7 +144,17 @@ export const patchProduct = async (
 			);
 		}
 
-		const result = await productService.patch(
+		const existedCategory = await categoryService.findById(
+			req.body.CategoryId
+		);
+		if (!existedCategory) {
+			throw new CustomAPIError(
+				"Category does not found",
+				StatusCodes.NotFound404
+			);
+		}
+
+		const result = await productService.changeCategory(
 			req.params.productId,
 			req.body
 		);

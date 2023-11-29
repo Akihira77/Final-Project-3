@@ -13,19 +13,19 @@ import {
 	Unique,
 	UpdatedAt,
 } from "sequelize-typescript";
-import Product from "./product.model.js";
+import ProductModel from "./product.model.js";
 
-export interface ICategory {
+export interface ICategoryModel {
 	id: number;
 	type: string;
 	sold_product_amount: number;
-	products: Product[];
+	Products: ProductModel[];
 	createdAt: Date;
 	updatedAt: Date;
 }
 
 @Table({ tableName: "Categories" })
-class Category extends Model implements ICategory {
+class CategoryModel extends Model implements ICategoryModel {
 	@PrimaryKey
 	@AutoIncrement
 	@AllowNull(false)
@@ -44,8 +44,8 @@ class Category extends Model implements ICategory {
 	@Column(DataType.INTEGER)
 	declare sold_product_amount: number;
 
-	@HasMany(() => Product)
-	declare products: Product[];
+	@HasMany(() => ProductModel)
+	declare Products: ProductModel[];
 
 	@CreatedAt
 	@Column(DataType.DATE)
@@ -56,4 +56,4 @@ class Category extends Model implements ICategory {
 	declare updatedAt: Date;
 }
 
-export default Category;
+export default CategoryModel;

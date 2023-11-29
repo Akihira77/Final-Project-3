@@ -1,8 +1,6 @@
-import User from "../db/models/user.model.js";
 import { sequelize } from "../db/db.js";
-
 import { formatCurrency } from "../utils/formattedCurrency.js";
-import Product from "../db/models/product.model.js";
+import ProductModel from "../db/models/product.model.js";
 import {
 	CreateProductRequestDtoType,
 	CreateProductResponseDtoType,
@@ -10,35 +8,34 @@ import {
 	EditProductResponseDtoType,
 	PatchProductRequestDtoType,
 	PatchProductResponseDtoType,
-	editStockProductRequestDtoType,
-	editStockProductResponseDtoType,
+	ProductDtoType,
 } from "../db/dtos/products/index.dto.js";
 
-export class ProductService {
+class ProductService {
 	private readonly _productRepository;
 	constructor() {
-		this._productRepository = sequelize.getRepository(Product);
+		this._productRepository = sequelize.getRepository(ProductModel);
 	}
-	async findAll(): Promise<Product[]> {
+	async findAll(): Promise<ProductDtoType[]> {
 		try {
-			const products = await this._productRepository.findAll({});
+			const products = await this._productRepository.findAll();
 
-			products.map((product) => {
+			const formattedProducts = products.map((product) => {
 				const formattedBalance = formatCurrency(product.price);
 
 				return {
-					...product,
+					...product.dataValues,
 					price: formattedBalance,
 				};
 			});
 
-			return products;
+			return formattedProducts;
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async findById(productId: string): Promise<Product | null> {
+	async findById(productId: string): Promise<ProductModel | null> {
 		try {
 			const product = await this._productRepository.findOne({
 				where: {
@@ -56,26 +53,13 @@ export class ProductService {
 		request: CreateProductRequestDtoType
 	): Promise<CreateProductResponseDtoType> {
 		try {
-			const {
-				id,
-				title,
-				price,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
-			} = await this._productRepository.create(request);
+			const product = await this._productRepository.create(request);
 
-			const formattedBalance = formatCurrency(price);
+			const formattedBalance = formatCurrency(product.price);
 
 			return {
-				id,
-				title,
+				...product.dataValues,
 				price: formattedBalance,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
 			};
 		} catch (error) {
 			throw error;
@@ -94,32 +78,19 @@ export class ProductService {
 				returning: true,
 			});
 
-			const {
-				id,
-				title,
-				price,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
-			} = result[1][0]!;
-			const formattedBalance = formatCurrency(price);
+			const product = result[1][0]!;
+			const formattedBalance = formatCurrency(product.price);
 
 			return {
-				id,
-				title,
+				...product.dataValues,
 				price: formattedBalance,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
 			};
 		} catch (error) {
 			throw error;
 		}
 	}
 
-	async patch(
+	async changeCategory(
 		productId: string,
 		request: PatchProductRequestDtoType
 	): Promise<PatchProductResponseDtoType> {
@@ -131,47 +102,12 @@ export class ProductService {
 				returning: true,
 			});
 
-			const {
-				id,
-				title,
-				price,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
-			} = result[1][0]!;
-			const formattedBalance = formatCurrency(price);
+			const product = result[1][0]!;
+			const formattedBalance = formatCurrency(product.price);
 
 			return {
-				id,
-				title,
+				...product.dataValues,
 				price: formattedBalance,
-				stock,
-				CategoryId,
-				createdAt,
-				updatedAt,
-			};
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async editStock(
-		productId: string,
-		request: editStockProductRequestDtoType
-	): Promise<editStockProductResponseDtoType> {
-		try {
-			const result = await this._productRepository.update(request, {
-				where: {
-					id: productId,
-				},
-				returning: true,
-			});
-
-			const { stock } = result[1][0]!;
-
-			return {
-				stock,
 			};
 		} catch (error) {
 			throw error;
@@ -192,3 +128,5 @@ export class ProductService {
 		}
 	}
 }
+
+export default ProductService;

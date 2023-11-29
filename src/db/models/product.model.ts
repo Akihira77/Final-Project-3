@@ -14,20 +14,21 @@ import {
 	Max,
 	Min,
 } from "sequelize-typescript";
-import Category from "./category.model.js";
+import CategoryModel from "./category.model.js";
 
-export interface IProduct {
+export interface IProductModel {
 	id: number;
 	title: string;
 	price: number;
 	stock: number;
 	CategoryId: number;
+	Category: CategoryModel;
 	createdAt: Date;
 	updatedAt: Date;
 }
 
 @Table({ tableName: "Products" })
-class Product extends Model implements IProduct {
+class ProductModel extends Model implements IProductModel {
 	@PrimaryKey
 	@AllowNull(false)
 	@AutoIncrement
@@ -53,12 +54,12 @@ class Product extends Model implements IProduct {
 	declare stock: number;
 
 	@AllowNull(false)
-	@ForeignKey(() => Category)
+	@ForeignKey(() => CategoryModel)
 	@Column(DataType.INTEGER)
 	declare CategoryId: number;
 
-	@BelongsTo(() => Category)
-	declare category: ReturnType<() => Category>;
+	@BelongsTo(() => CategoryModel)
+	declare Category: ReturnType<() => CategoryModel>;
 
 	@AllowNull(false)
 	@CreatedAt
@@ -71,4 +72,4 @@ class Product extends Model implements IProduct {
 	declare updatedAt: Date;
 }
 
-export default Product;
+export default ProductModel;

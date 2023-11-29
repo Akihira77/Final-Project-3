@@ -1,17 +1,16 @@
 import { sequelize } from "../db/db.js";
-import { EditSPACategoryRequestDtoType, editSPACategoryResponseDtoType } from "../db/dtos/category/editSPA.dto.js";
-import Category from "../db/models/category.model.js";
-import Product from "../db/models/product.model.js";
+import CategoryModel from "../db/models/category.model.js";
+import ProductModel from "../db/models/product.model.js";
 
 class CategoryService {
 	private readonly _categoryRepository;
 	private readonly _productRepository;
 	constructor() {
-		this._categoryRepository = sequelize.getRepository(Category);
-		this._productRepository = sequelize.getRepository(Product);
+		this._categoryRepository = sequelize.getRepository(CategoryModel);
+		this._productRepository = sequelize.getRepository(ProductModel);
 	}
 
-	async findAll(): Promise<Category[]> {
+	async findAll(): Promise<CategoryModel[]> {
 		try {
 			const categories = await this._categoryRepository.findAll({
 				include: [
@@ -27,7 +26,7 @@ class CategoryService {
 		}
 	}
 
-	async add(type: string): Promise<Category> {
+	async add(type: string): Promise<CategoryModel> {
 		try {
 			const result = await this._categoryRepository.create({ type });
 
@@ -37,7 +36,10 @@ class CategoryService {
 		}
 	}
 
-	async edit(category: Category, newType: string): Promise<Category> {
+	async edit(
+		category: CategoryModel,
+		newType: string
+	): Promise<CategoryModel> {
 		try {
 			const affectedCategories = await this._categoryRepository.update(
 				{ type: newType },
@@ -57,28 +59,6 @@ class CategoryService {
 		}
 	}
 
-	async editSPA(
-		categoryId: number,
-		request: EditSPACategoryRequestDtoType
-	): Promise<editSPACategoryResponseDtoType> {
-		try {
-			const result = await this._categoryRepository.update(request, {
-				where: {
-					id: categoryId,			
-				},
-				returning: true,
-			});
-
-			const {sold_product_amount} = result[1][0]!;
-
-			return {
-				sold_product_amount,
-			};
-		} catch (error) {
-			throw error;
-		}
-	}
-
 	async delete(categoryId: number): Promise<boolean> {
 		try {
 			const affectedCategories = await this._categoryRepository.destroy({
@@ -93,7 +73,7 @@ class CategoryService {
 		}
 	}
 
-	async findById(categoryId: number): Promise<Category | null> {
+	async findById(categoryId: number): Promise<CategoryModel | null> {
 		try {
 			const category = await this._categoryRepository.findByPk(
 				categoryId

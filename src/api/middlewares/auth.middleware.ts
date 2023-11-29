@@ -21,6 +21,7 @@ const authMiddleware = (
 
 		const payload = jwtVerify(token);
 		if (rolePermitted) {
+			console.log(rolePermitted);
 			if (payload.user.role !== rolePermitted) {
 				throw new CustomAPIError(
 					"Invalid Credentials",

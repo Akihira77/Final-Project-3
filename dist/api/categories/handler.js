@@ -3,9 +3,9 @@ import { validateZodSchema } from "../../utils/validateZodSchema.js";
 import { CustomAPIError, ZodSchemaError } from "../../errors/index.error.js";
 import CategoryService from "../../services/category.service.js";
 import { StatusCodes } from "../../utils/constants.js";
+const categoryService = new CategoryService();
 export const findAll = async (req, res) => {
     try {
-        const categoryService = new CategoryService();
         const categories = await categoryService.findAll();
         res.status(StatusCodes.Ok200).send({ categories });
         return;
@@ -20,7 +20,6 @@ export const add = async (req, res) => {
         if (!validationResult.success) {
             throw new ZodSchemaError(validationResult.errors);
         }
-        const categoryService = new CategoryService();
         const category = await categoryService.add(req.body.type);
         res.status(StatusCodes.Created201).send({ category });
         return;
@@ -35,7 +34,6 @@ export const edit = async (req, res) => {
         if (!validationResult.success) {
             throw new ZodSchemaError(validationResult.errors);
         }
-        const categoryService = new CategoryService();
         const existedCategory = await categoryService.findById(req.params.categoryId);
         if (!existedCategory) {
             throw new CustomAPIError("Invalid Category", StatusCodes.NotFound404);
@@ -50,7 +48,6 @@ export const edit = async (req, res) => {
 };
 export const remove = async (req, res) => {
     try {
-        const categoryService = new CategoryService();
         const result = categoryService.delete(req.params.categoryId);
         if (!result) {
             throw new CustomAPIError("Invalid Category", StatusCodes.NotFound404);

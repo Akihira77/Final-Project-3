@@ -2,20 +2,14 @@ import { sequelize } from "../db/db.js";
 import {
 	LoginRequestDtoType,
 	LoginResponseDtoType,
-} from "../db/dtos/users/login.dto.js";
-import {
 	RegisterRequestDtoType,
-	RegisterResponseDtoType,
-} from "../db/dtos/users/register.dto.js";
-import {
 	TopupRequestDtoType,
 	TopupResponseDtoType,
-} from "../db/dtos/users/topup.dto.js";
-import {
 	UpdateUserRequestDtoType,
 	UpdateUserResponseDtoType,
-} from "../db/dtos/users/update.dto.js";
-import User from "../db/models/user.model.js";
+} from "../db/dtos/users/index.dto.js";
+import { RegisterResponseDtoType } from "../db/dtos/users/register.dto.js";
+import UserModel from "../db/models/user.model.js";
 import { validate } from "../utils/bcrypt.js";
 import { formatCurrency } from "../utils/formattedCurrency.js";
 import { jwtSign } from "../utils/jwt.js";
@@ -23,10 +17,10 @@ import { jwtSign } from "../utils/jwt.js";
 class UserService {
 	private readonly _userRepository;
 	constructor() {
-		this._userRepository = sequelize.getRepository(User);
+		this._userRepository = sequelize.getRepository(UserModel);
 	}
 
-	async findAll(): Promise<User[]> {
+	async findAll(): Promise<UserModel[]> {
 		try {
 			return await this._userRepository.findAll();
 		} catch (error) {
@@ -90,7 +84,7 @@ class UserService {
 		}
 	}
 
-	async findByUserId(userId: number): Promise<User | null> {
+	async findByUserId(userId: number): Promise<UserModel | null> {
 		try {
 			const existedUser = await this._userRepository.findByPk(userId);
 
@@ -100,7 +94,7 @@ class UserService {
 		}
 	}
 
-	async findByEmail(email: string): Promise<User | null> {
+	async findByEmail(email: string): Promise<UserModel | null> {
 		try {
 			const existedUser = await this._userRepository.findOne({
 				where: {
@@ -115,7 +109,7 @@ class UserService {
 	}
 
 	async updateUser(
-		user: User,
+		user: UserModel,
 		request: UpdateUserRequestDtoType
 	): Promise<UpdateUserResponseDtoType> {
 		try {

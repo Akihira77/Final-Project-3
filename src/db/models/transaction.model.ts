@@ -12,15 +12,15 @@ import {
 	UpdatedAt,
 	Model,
 } from "sequelize-typescript";
-import Product from "./product.model.js";
-import User from "./user.model.js";
+import ProductModel from "./product.model.js";
+import UserModel from "./user.model.js";
 
-export interface ITransaction {
+export interface ITransactionModel {
 	id: number;
 	ProductId: number;
-    product: Product;
+	Product: ProductModel;
 	UserId: number;
-	user: User;
+	User: UserModel;
 	quantity: number;
 	total_price: number;
 	createdAt: Date;
@@ -28,7 +28,7 @@ export interface ITransaction {
 }
 
 @Table({ tableName: "Transactions" })
-class Transaction extends Model implements ITransaction {
+class TransactionModel extends Model implements ITransactionModel {
 	@PrimaryKey
 	@AllowNull(false)
 	@AutoIncrement
@@ -36,27 +36,27 @@ class Transaction extends Model implements ITransaction {
 	declare id: number;
 
 	@AllowNull(false)
-	@ForeignKey(() => Product)
+	@ForeignKey(() => ProductModel)
 	@Column(DataType.INTEGER)
 	declare ProductId: number;
 
-	@BelongsTo(() => Product)
-	declare product: ReturnType<() => Product>;
-	
-    @AllowNull(false)
-	@ForeignKey(() => User)
+	@BelongsTo(() => ProductModel)
+	declare Product: ReturnType<() => ProductModel>;
+
+	@AllowNull(false)
+	@ForeignKey(() => UserModel)
 	@Column(DataType.INTEGER)
 	declare UserId: number;
 
-	@BelongsTo(() => User)
-	declare user: ReturnType<() => User>;
+	@BelongsTo(() => UserModel)
+	declare User: ReturnType<() => UserModel>;
 
 	@AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare quantity: number;
 
-    @AllowNull(false)
+	@AllowNull(false)
 	@NotEmpty
 	@Column(DataType.STRING)
 	declare total_price: number;
@@ -72,4 +72,4 @@ class Transaction extends Model implements ITransaction {
 	declare updatedAt: Date;
 }
 
-export default Transaction;
+export default TransactionModel;

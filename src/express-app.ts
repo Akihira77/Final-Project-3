@@ -11,7 +11,7 @@ import categoryEndpoints from "./api/categories/endpoints.js";
 import transactionEndpoint from "./api/transaction/endpoints.js";
 
 export const startServer = async () => {
-	await sequelize.sync();
+	// await sequelize.sync();
 	const app = express();
 
 	// MIDDLEWARE

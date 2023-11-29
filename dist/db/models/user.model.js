@@ -11,7 +11,7 @@ import { AllowNull, AutoIncrement, BeforeBulkCreate, BeforeCreate, Column, Creat
 import { hashPassword } from "../../utils/bcrypt.js";
 export const Genders = ["male", "female"];
 export const Roles = ["admin", "customer"];
-let User = class User extends Model {
+let UserModel = class UserModel extends Model {
     static async hashingPassword(instance) {
         instance.password = await hashPassword(instance.password);
     }
@@ -22,12 +22,12 @@ __decorate([
     AllowNull(false),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], User.prototype, "id", void 0);
+], UserModel.prototype, "id", void 0);
 __decorate([
     AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], User.prototype, "full_name", void 0);
+], UserModel.prototype, "full_name", void 0);
 __decorate([
     IsEmail,
     Unique,
@@ -35,12 +35,12 @@ __decorate([
     AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
+], UserModel.prototype, "email", void 0);
 __decorate([
     AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], User.prototype, "password", void 0);
+], UserModel.prototype, "password", void 0);
 __decorate([
     Is("Gender", (value) => {
         if (!Genders.includes(value)) {
@@ -50,7 +50,7 @@ __decorate([
     AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], User.prototype, "gender", void 0);
+], UserModel.prototype, "gender", void 0);
 __decorate([
     Default("customer"),
     Is("Role", (value) => {
@@ -61,7 +61,7 @@ __decorate([
     AllowNull(false),
     Column(DataType.STRING),
     __metadata("design:type", String)
-], User.prototype, "role", void 0);
+], UserModel.prototype, "role", void 0);
 __decorate([
     Max(100000000),
     Default(0),
@@ -69,26 +69,26 @@ __decorate([
     AllowNull(false),
     Column(DataType.INTEGER),
     __metadata("design:type", Number)
-], User.prototype, "balance", void 0);
+], UserModel.prototype, "balance", void 0);
 __decorate([
     CreatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
+], UserModel.prototype, "createdAt", void 0);
 __decorate([
     UpdatedAt,
     Column(DataType.DATE),
     __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
+], UserModel.prototype, "updatedAt", void 0);
 __decorate([
     BeforeCreate,
     BeforeBulkCreate,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [User]),
+    __metadata("design:paramtypes", [UserModel]),
     __metadata("design:returntype", Promise)
-], User, "hashingPassword", null);
-User = __decorate([
+], UserModel, "hashingPassword", null);
+UserModel = __decorate([
     Table({ tableName: "Users" })
-], User);
-export default User;
+], UserModel);
+export default UserModel;
 //# sourceMappingURL=user.model.js.map

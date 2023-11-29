@@ -14,8 +14,4 @@ userEndpoints
 	.delete("", userHandler.deleteUser)
 	.patch("/topup", userHandler.topup);
 
-// userEndpoints.put("/:userId", authMiddleware, userHandler.updateUser);
-// userEndpoints.delete("/:userId", authMiddleware, userHandler.deleteUser);
-// userEndpoints.patch("/topup", authMiddleware, userHandler.topup);
-
 export default userEndpoints;

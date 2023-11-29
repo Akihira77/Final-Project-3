@@ -8,7 +8,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 import { AllowNull, AutoIncrement, Column, CreatedAt, DataType, Default, HasMany, Model, NotEmpty, PrimaryKey, Table, Unique, UpdatedAt, } from "sequelize-typescript";
-import Product from "./product.model.js";
+import ProductModel from "./product.model.js";
 let CategoryModel = class CategoryModel extends Model {
 };
 __decorate([
@@ -33,7 +33,7 @@ __decorate([
     __metadata("design:type", Number)
 ], CategoryModel.prototype, "sold_product_amount", void 0);
 __decorate([
-    HasMany(() => Product),
+    HasMany(() => ProductModel),
     __metadata("design:type", Array)
 ], CategoryModel.prototype, "Products", void 0);
 __decorate([

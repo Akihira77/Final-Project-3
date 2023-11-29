@@ -13,13 +13,13 @@ import {
 	Unique,
 	UpdatedAt,
 } from "sequelize-typescript";
-import Product from "./product.model.js";
+import ProductModel from "./product.model.js";
 
 export interface ICategoryModel {
 	id: number;
 	type: string;
 	sold_product_amount: number;
-	Products: Product[];
+	Products: ProductModel[];
 	createdAt: Date;
 	updatedAt: Date;
 }
@@ -44,8 +44,8 @@ class CategoryModel extends Model implements ICategoryModel {
 	@Column(DataType.INTEGER)
 	declare sold_product_amount: number;
 
-	@HasMany(() => Product)
-	declare Products: Product[];
+	@HasMany(() => ProductModel)
+	declare Products: ProductModel[];
 
 	@CreatedAt
 	@Column(DataType.DATE)

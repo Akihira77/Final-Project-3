@@ -16,6 +16,9 @@ migration code and .model.ts is must be same so after the project run it won't o
 for apply the migrations, passing database connection string as an argument (use connection string for db:create or use an another existing database connection string)  
 `npm run db:migrate -- <connection_string>`
 
+for seeding all data to database, passing database connection string as an argument  
+`npm run db:seed -- <connection_string>`
+
 run project  
 `npm run start:dev`
 
